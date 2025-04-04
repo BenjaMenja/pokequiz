@@ -2,8 +2,8 @@
 
 @font-face {
   font-family: Pkmn;
-  src: url("assets/fonts/Pokemon-Generation-1.woff2") format("woff2"),
-    url("assets/fonts/Pokemon-Generation-1.woff") format("woff");
+  src: url("/assets/fonts/Pokemon-Generation-1.woff2") format("woff2"),
+    url("/assets/fonts/Pokemon-Generation-1.woff") format("woff");
 }
 
 @theme {

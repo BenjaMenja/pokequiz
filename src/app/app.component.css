@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .main {
-  @apply min-h-screen bg-[url(/images/route-201.png)] bg-cover flex flex-col;
+  @apply min-h-screen bg-[url("/assets/route-201.png")] bg-cover flex flex-col;
 }
 
 .content {
