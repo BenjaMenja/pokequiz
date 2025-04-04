@@ -1,59 +1,18 @@
-# Pokequiz
+# PokeQuiz
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.3.
+PokeQuiz aims to be the go to destination for Pokemon related quizzes. Fill in as much information as you can about Pokemon, Moves, and Cries!
 
-## Development server
+## Features
 
-To start a local development server, run:
+- Quizzes for Pokemon Data, Moves, and Cries
+- Settings to tailor quizzes to your liking
+- End-of-quiz breakdowns on how well you performed in certain categories
 
-```bash
-ng serve
-```
+## Planned Features
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Fully customizable quiz system w/ editor
+- Multiplayer...?
 
-## Code scaffolding
+**Happy Quizzing!**
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+(PokéQuiz is an unofficial project based on the Pokemon series, and is not affiliated with The Pokemon Company, Game Freak, or organizations associated with the development or publishing of the Pokemon series.)

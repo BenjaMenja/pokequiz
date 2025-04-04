@@ -1,0 +1,84 @@
+<div class="space-y-8 justify-items-center">
+  <div *ngIf="status === 0" class="col-start-3">
+    <div class="card justify-items-center">
+      <img src="/images/welcome.png" class="w-1/2" alt="Welcome Title"/>
+      <p>PokeQuiz is a ten round quiz, testing your knowledge of Pokemon data!</p>
+      <p>You will have {{maxTimer}} seconds per round to answer as much as you can about a Pokemon.</p>
+      <p>You will be scored based on how many correct answers you get per Pokemon.</p>
+      <p>A breakdown of how well you did will be shown at the end.</p>
+      <p>Good Luck!</p>
+    </div>
+    <div class="flex flex-row gap-2 justify-center">
+      <button routerLink="/info" class="mt-2">Info</button>
+      <button (click)="startGame()" class="mt-2">Begin</button>
+    </div>
+  </div>
+  <!-- HTML for the actual game -->
+  <div *ngIf="status === 1 || status === 2" class="card w-1/2 space-y-4">
+    <h3>Time Remaining: {{timer}}s</h3>
+    <form *ngIf="status === 1" class="space-y-5 justify-self-center items-center w-1/2">
+      <div class="row justify-items-center">
+        <h3><b>{{displayName}}</b></h3>
+        <img src={{sprite}} alt="Pokemon Sprite"/>
+      </div>
+      <div class="inputfield">
+        <label title="The generation this pokemon was introduced in">Generation</label>
+        <input class="w-full" type="number" min="1" max="9" (change)="updateInputData($event.target, 'generation')" [defaultValue]="1"/>
+      </div>
+      <div class="inputfield">
+        <label title="The type(s) this pokemon has. Order does not matter.">Types</label>
+          <select class="inline-flex justify-center bg-white text-black rounded-md w-full" (change)="updateInputData($event.target, 'type1')">
+            <option *ngFor="let type of PkmnTypes">{{type}}</option>
+          </select>
+          <select class="inline-flex justify-center bg-white text-black rounded-md w-full" (change)="updateInputData($event.target, 'type2')">
+            <option *ngFor="let type of PkmnTypes">{{type}}</option>
+          </select>
+      </div>
+      <div class="inputfield">
+        <label title="The sum of the pokemon's base stats.">Base Stat Total</label>
+        <input class="w-full" type="number" min="0" max="5000" (change)="updateInputData($event.target, 'bst')" [defaultValue]="1"/>
+      </div>
+      <div class="inputfield">
+        <label title="The possible abilities this pokemon can have. Order between ability 1 and 2 does not matter. However, the hidden ability must be in the appropriate spot!">Abilities</label>
+        <input class="w-full" type="text" (change)="updateInputData($event.target, 'ability1')" placeholder="Ability 1"/>
+        <input class="w-full" type="text" (change)="updateInputData($event.target, 'ability2')" placeholder="Ability 2"/>
+        <input class="w-full" type="text" (change)="updateInputData($event.target, 'ability3')" placeholder="Hidden"/>
+      </div>
+      <div class="inputfield">
+        <label title="The height of the pokemon in meters.">Height (m)</label>
+        <input class="w-full" type="number" (change)="updateInputData($event.target, 'height')" [defaultValue]="0"/>
+      </div>
+      <div class="inputfield">
+        <label title="The weight of the pokemon in kilograms.">Weight (kg)</label>
+        <input class="w-full" type="number" (change)="updateInputData($event.target, 'weight')" [defaultValue]="0"/>
+      </div>
+      <button *ngIf="status === 1" type="button" role="button" (click)="makeGuess($event)">Guess</button>
+    </form>
+    <p>Current Score: {{score}} / {{maxscore}}</p>
+    <h3>Round {{round}}</h3>
+  </div>
+  <div *ngIf="status === 2" class="card justify-items-center">
+    <div class="flex flex-row gap-4 justify-center items-center">
+      <diffdisplay [data]="{generation: inputData.generation, type: [inputData.type1, inputData.type2], bst: inputData.bst, abilities: [inputData.ability1, inputData.ability2, inputData.ability3], height: inputData.height, weight: inputData.weight}" [title]="'Your Guess'"></diffdisplay>
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+        <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+      </svg>
+      <diffdisplay [data]="{generation: generation, type: types, bst: bst, abilities: abilities, height: height, weight: weight}" [guesses]="guesses" [title]="'Answer'"></diffdisplay>
+    </div>
+  </div>
+  <!-- HTML for the end of game screen -->
+  <div *ngIf="status === 3" class="card space-x-2">
+    <h3>Congratulations!</h3>
+    <p><b>You scored: </b>{{score}} out of {{maxscore}}</p>
+    <button type="button" (click)="updateGameStatus(4)">View Statistics</button>
+    <button (click)="resetGame()">Play Again</button>
+  </div>
+  <!-- HTML for game statisics -->
+   <div *ngIf="status === 4" class="card w-1/2 h-auto space-x-4">
+    <h2>Game Statistics</h2>
+    <canvas #chartRef id="chartRef">{{chart}}</canvas>
+    <p><b>You scored: </b>{{score}} out of {{maxscore}}</p>
+    <button (click)="downloadGraph()">Download</button>
+    <button (click)="resetGame()">Play Again</button>
+   </div>
+</div>

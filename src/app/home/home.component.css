@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.home {
+  @apply justify-items-center;
+}
+
+.row {
+  @apply grid grid-cols-2 justify-items-center items-center;
+}

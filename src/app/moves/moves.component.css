@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+select,
+option {
+  @apply border-black border-2;
+}
+
+label {
+  @apply hover:cursor-help underline decoration-dotted;
+}

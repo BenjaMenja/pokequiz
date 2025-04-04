@@ -1,1 +1,55 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+@font-face {
+  font-family: Pkmn;
+  src: url("assets/fonts/Pokemon-Generation-1.woff2") format("woff2"),
+    url("assets/fonts/Pokemon-Generation-1.woff") format("woff");
+}
+
+@theme {
+  --font-pkmn: Pkmn, "sans-serif";
+}
+
+@layer base {
+  * {
+    @apply font-pkmn;
+  }
+}
+
+@layer components {
+  button {
+    @apply p-2 bg-green-600 rounded-lg border-2 hover:bg-green-500 hover:cursor-pointer;
+  }
+
+  h1 {
+    @apply text-3xl;
+  }
+
+  h2 {
+    @apply text-2xl;
+  }
+
+  h3 {
+    @apply text-xl;
+  }
+
+  p {
+    @apply text-lg;
+  }
+
+  input {
+    @apply border-2 border-black rounded-md bg-white placeholder:text-gray-400 text-black w-24 p-1;
+  }
+
+  .inputfield {
+    @apply flex whitespace-nowrap space-x-2 items-center justify-center;
+  }
+
+  .card {
+    @apply rounded-lg bg-[rgba(255,255,255,0.75)] text-black p-4 mb-4;
+  }
+
+  .clickable {
+    @apply hover:bg-white hover:cursor-pointer;
+  }
+}

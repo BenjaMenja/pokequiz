@@ -17,7 +17,13 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@tailwindcss/postcss": "^4.0.14",
+    "chart.js": "^4.3.0",
+    "ng2-charts": "^8.0.0",
+    "pokeapi-js-wrapper": "^1.2.8",
+    "postcss": "^8.5.3",
     "rxjs": "~7.8.0",
+    "tailwindcss": "^4.1.2",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },

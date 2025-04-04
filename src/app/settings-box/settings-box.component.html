@@ -1,0 +1,51 @@
+<div class="card" *ngIf="active">
+  <h2><u><b>Settings</b></u></h2>
+  <div class="gap-x-2 ">
+    <div class="card border-2 justify-items-center">
+      <h3><u>General</u></h3>
+      <div class="inputfield">
+        <label>Timer Length</label>
+        <input type="number" min="1" max="100" [value]="settings['timer']" placeholder="Timer" (change)="updateSettings('timer', $event.target)"/>
+      </div>
+      <div class="inputfield">
+        <label>Number of Rounds</label>
+        <input type="number" min="1" max="100" [value]="settings['rounds']" placeholder="Rounds" (change)="updateSettings('rounds', $event.target)"/>
+      </div>
+    </div>
+    <div class="card border-2 justify-items-center">
+      <h3><u>Pokemon Quiz</u></h3>
+      <div class="inputfield">
+        <label>Base Stat Range</label>
+        <input type="number" min="0" [value]="settings['bstRange']" placeholder="Base Stat" (change)="updateSettings('bstRange', $event.target)"/>
+      </div>
+      <div class="inputfield">
+        <label>Height Range</label>
+        <input type="number" min="0" [value]="settings['heightRange']" placeholder="Height" (change)="updateSettings('heightRange', $event.target)"/>
+      </div>
+      <div class="inputfield">
+        <label>Weight Range</label>
+        <input type="number" min="0" [value]="settings['weightRange']" placeholder="Weight" (change)="updateSettings('weightRange', $event.target)"/>
+      </div>
+    </div>
+    <div class="card border-2 justify-items-center">
+      <h3><u>Move Quiz</u></h3>
+      <div class="inputfield">
+        <label>PP Range</label>
+        <input type="number" min="0" [value]="settings['ppRange']" placeholder="PP" (change)="updateSettings('ppRange', $event.target)"/>
+      </div>
+      <div class="inputfield">
+        <label>Power Range</label>
+        <input type="number" min="0" [value]="settings['powerRange']" placeholder="Power" (change)="updateSettings('powerRange', $event.target)"/>
+      </div>
+      <div class="inputfield">
+        <label>Accuracy Range</label>
+        <input type="number" min="0" [value]="settings['accuracyRange']" placeholder="Accuracy" (change)="updateSettings('accuracyRange', $event.target)"/>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 gap-2">
+    <button (click)="saveSettings()">{{buttonText}}</button>
+    <button (click)="resetSettings()" class="bg-red-700 hover:bg-red-500">Reset</button>
+  </div>
+
+</div>

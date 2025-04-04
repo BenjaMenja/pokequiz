@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.titlebar {
+  @apply grid grid-cols-3 items-center justify-items-center;
+}
+
+.titlebar img {
+  @apply group-hover:animate-bounce h-8 w-auto;
+}

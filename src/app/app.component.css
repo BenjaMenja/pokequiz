@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.main {
+  @apply min-h-screen bg-[url(/images/route-201.png)] bg-cover flex flex-col;
+}
+
+.content {
+  @apply items-center text-center text-white flex-[1];
+}

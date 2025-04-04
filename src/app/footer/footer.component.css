@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+a {
+  @apply text-[#6868ff] visited:text-[#0000EE] active:visited:text-[#FF0000];
+}
