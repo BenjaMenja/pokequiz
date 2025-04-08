@@ -15,8 +15,9 @@
   </div>
   <!-- HTML for the actual game -->
   <div *ngIf="status === 1 || status === 2" class="card w-1/2 space-y-4">
-    <h3>Time Remaining: {{timer}}s</h3>
-    <form *ngIf="status === 1" class="space-y-5 justify-self-center items-center w-1/2">
+    <h3 *ngIf="(status === 1) || (status === 2 && timeBetween > 0)">Time Remaining: {{timer}}s</h3>
+    <button *ngIf="(status === 2) && (timeBetween === 0)" type="button" role="button" (click)="advanceRound()">Next Round</button>
+    <form *ngIf="status === 1" class="space-y-5 justify-self-center items-center w-1/2" (keydown.enter)="$event.preventDefault()">
       <div class="row justify-items-center">
         <h3><b>{{displayName}}</b></h3>
         <img src={{sprite}} alt="Pokemon Sprite"/>

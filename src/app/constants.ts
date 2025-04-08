@@ -179,6 +179,7 @@ export const colorBar = (data: number): string => {
 export const defaultSettings = {
   timer: 30,
   rounds: 10,
+  timeBetween: 0,
   bstRange: 10,
   weightRange: 5,
   heightRange: 0.5,

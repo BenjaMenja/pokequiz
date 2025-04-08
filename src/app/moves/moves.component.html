@@ -15,9 +15,10 @@
   </div>
   <!-- HTML for the actual game -->
   <div *ngIf="status === 1 || status === 2" class="card w-1/2 space-y-4">
-    <h3>Time Remaining: {{timer}}s</h3>
+    <h3 *ngIf="(status === 1) || (status === 2 && timeBetween > 0)">Time Remaining: {{timer}}s</h3>
+    <button *ngIf="(status === 2) && (timeBetween === 0)" type="button" role="button" (click)="advanceRound()">Next Round</button>
     <h3><b>{{moveDescription}}</b></h3>
-    <form *ngIf="status === 1" class="space-y-5 justify-self-center items-center w-1/2">
+    <form *ngIf="status === 1" class="space-y-5 justify-self-center items-center w-1/2" (keydown.enter)="$event.preventDefault()">
       <div class="inputfield">
         <label title="The name of the move.">Name</label>
         <input class="w-full" type="text" (change)="updateInputData($event.target, 'name')" placeholder="Move Name"/>
@@ -37,7 +38,7 @@
         <input class="w-full" type="number" min="1" max="40" (change)="updateInputData($event.target, 'pp')" [defaultValue]="1"/>
       </div>
       <div class="inputfield">
-        <label title="The power of this move. Set to 0 if this move deals no direct damage, has variable power (Ex. Magnitude), or is a OHKO move (Ex. Guillotine).">Power</label>
+        <label title="The power of this move. Set to 0 if this move deals no direct damage (Ex. Counter), has variable power (Ex. Magnitude), or is a OHKO move (Ex. Guillotine).">Power</label>
         <input class="w-full" type="number" min="0" max="250" (change)="updateInputData($event.target, 'power')" [defaultValue]="0"/>
       </div>
       <div class="inputfield">

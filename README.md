@@ -11,6 +11,7 @@ PokeQuiz aims to be the go to destination for Pokemon related quizzes. Fill in a
 ## Planned Features
 
 - Fully customizable quiz system w/ editor
+- Mobile Compatibility
 - Multiplayer...?
 
 **Happy Quizzing!**

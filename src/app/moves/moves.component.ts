@@ -19,6 +19,7 @@ import { Pokedex } from 'pokeapi-js-wrapper';
 import { NgFor, NgIf } from '@angular/common';
 import { LocalStorageService } from '../services/LocalStorageService';
 import { RouterModule } from '@angular/router';
+import { StatsQuiz } from '../base_classes/StatsQuiz';
 
 type MoveData = {
   name: string;
@@ -36,18 +37,15 @@ type MoveData = {
   templateUrl: './moves.component.html',
   styleUrl: './moves.component.css',
 })
-export class MovesComponent implements OnDestroy {
+export class MovesComponent extends StatsQuiz implements OnDestroy {
   @ViewChild('chartRef', { static: false }) chartRef: ElementRef;
-  public chart: Chart;
-  public chartImg: string;
   constructor(
-    private storageService: LocalStorageService,
-    private renderer: Renderer2
+    protected override storageService: LocalStorageService,
+    protected override renderer: Renderer2
   ) {
+    super(storageService, renderer);
     const settings: any = this.storageService.getItem('settings');
-    this.maxTimer = settings.timer || defaultSettings.timer;
-    this.maxRounds = settings.rounds || defaultSettings.rounds;
-    this.ppRange = settings.ppRange || defaultSettings.bstRange;
+    this.ppRange = settings.ppRange || defaultSettings.ppRange;
     this.powerRange = settings.powerRange || defaultSettings.heightRange;
     this.accuracyRange = settings.accuracyRange || defaultSettings.weightRange;
   }
@@ -61,12 +59,6 @@ export class MovesComponent implements OnDestroy {
     return e !== 'None';
   });
   public MoveCategories = MoveCategories;
-  private P = new Pokedex({
-    protocol: 'https',
-    cache: true,
-    timeout: 5000,
-    cacheImages: true,
-  });
 
   public moveDescription: string = '';
   public moveData: MoveData = {
@@ -89,7 +81,7 @@ export class MovesComponent implements OnDestroy {
     accuracy: 0,
   };
 
-  private statistics = {
+  protected override statistics = {
     name: 0,
     type: 0,
     generation: 0,
@@ -101,32 +93,23 @@ export class MovesComponent implements OnDestroy {
 
   public guesses: Array<boolean> = [...new Array(7)].map(() => false);
 
-  // Other Data
-  public score: number = 0;
-  public round: number;
-  public status: number = 0;
-  public maxscore: number = 0;
-  public timer: number;
-  public timerHolder: NodeJS.Timeout;
-  public fetchTimeout: NodeJS.Timeout;
-
   // Settings
-  public maxTimer: number;
-  private maxRounds: number;
   private ppRange: number;
   private powerRange: number;
   private accuracyRange: number;
 
-  fetchMove() {
+  override fetchData() {
     // PokeAPI has 919 moves in the database
     const MoveID: number = Math.floor(Math.random() * 919) + 1;
     try {
       this.P.resource('https://pokeapi.co/api/v2/move/' + MoveID).then(
         (data) => {
-          console.log(data);
           this.moveDescription = this.searchForDescription(
             data.flavor_text_entries
           );
+          if (this.moveDescription === 'r') {
+            this.moveDescription = data.name;
+          }
           this.moveData.name = data.name;
           this.moveData.type = data.type.name;
           this.moveData.generation =
@@ -142,7 +125,7 @@ export class MovesComponent implements OnDestroy {
     }
   }
 
-  generateGraph(): void {
+  override generateGraph(): void {
     let context = this.chartRef.nativeElement.getContext('2d');
     const guessdata = [
       this.statistics.name,
@@ -213,16 +196,7 @@ export class MovesComponent implements OnDestroy {
     });
   }
 
-  downloadGraph() {
-    const anchor = this.renderer.createElement('a');
-    anchor.setAttribute('target', '_self');
-    anchor.setAttribute('href', this.chartImg);
-    anchor.setAttribute('download', 'chart.png');
-    anchor.click();
-    anchor.remove();
-  }
-
-  updateInputData(target: any, field: string): void {
+  override updateInputData(target: any, field: string): void {
     if (target !== null) {
       switch (field) {
         case 'name':
@@ -252,12 +226,12 @@ export class MovesComponent implements OnDestroy {
     }
   }
 
-  updateGameStatus(status: number): void {
+  override updateGameStatus(status: number): void {
     // 0 is the start, 1 is game running, 2 is generating new move, 3 is game end, 4 is statistics
     this.status = status;
     if (status === 1) {
       this.timer = this.maxTimer;
-      this.timerHolder = setInterval(this.decrementTimer, 1000);
+      this.timerHolder = setInterval(() => this.decrementTimer(), 1000);
     }
     if (status === 2) {
       this.nextRound();
@@ -269,13 +243,7 @@ export class MovesComponent implements OnDestroy {
     }
   }
 
-  startGame() {
-    this.round = 1;
-    this.fetchMove();
-    this.updateGameStatus(1);
-  }
-
-  resetGame() {
+  override resetGame() {
     this.score = 0;
     this.maxscore = 0;
     this.resetMoveData(this.moveInputData);
@@ -283,37 +251,26 @@ export class MovesComponent implements OnDestroy {
     for (let i = 0; i < this.guesses.length; i++) {
       this.guesses[i] = false;
     }
+    this.statistics = {
+      name: 0,
+      type: 0,
+      generation: 0,
+      pp: 0,
+      power: 0,
+      category: 0,
+      accuracy: 0,
+    };
     this.startGame();
   }
 
-  nextRound(): void {
-    clearInterval(this.timerHolder);
-    if (this.round >= this.maxRounds) {
-      this.fetchTimeout = setTimeout(() => {
-        this.updateGameStatus(3);
-        return;
-      }, 3000);
-    } else {
-      this.fetchTimeout = setTimeout(() => {
-        this.resetMoveData(this.moveData);
-        this.resetMoveData(this.moveInputData);
-        for (let i = 0; i < this.guesses.length; i++) {
-          this.guesses[i] = false;
-        }
-        this.fetchMove();
-        this.updateGameStatus(1);
-        this.round++;
-      }, 3000);
+  override advanceRound(): void {
+    this.resetMoveData(this.moveData);
+    this.resetMoveData(this.moveInputData);
+    for (let i = 0; i < this.guesses.length; i++) {
+      this.guesses[i] = false;
     }
+    super.advanceRound();
   }
-
-  decrementTimer = () => {
-    if (this.timer <= 0) {
-      this.makeGuess(new Event('none'));
-    } else {
-      this.timer--;
-    }
-  };
 
   resetMoveData(data: MoveData) {
     data.name = '';
@@ -332,23 +289,21 @@ export class MovesComponent implements OnDestroy {
    */
   searchForDescription(text_entries: Array<any>): string {
     for (let i = text_entries.length - 1; i >= 0; i--) {
-      console.log(text_entries[i]);
       if (text_entries[i].language.name === 'en') {
         if (
           !text_entries[i].flavor_text.includes(
             'recommended that this move is forgotten'
-          )
+          ) &&
+          !text_entries[i].flavor_text.includes('Dummy Data')
         ) {
           return text_entries[i].flavor_text;
-        } else {
-          console.log('CANT BE USED LOL');
         }
       }
     }
     return 'r';
   }
 
-  makeGuess(e: Event): void {
+  override makeGuess(e: Event): void {
     e.preventDefault();
     this.maxscore += 7;
     if (this.moveData.name === FormatInput(this.moveInputData.name)) {

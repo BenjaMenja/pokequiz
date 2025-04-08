@@ -19,6 +19,7 @@ import { Chart } from 'chart.js/auto';
 import { RouterModule } from '@angular/router';
 import { DiffdisplayComponent } from '../diffdisplay/diffdisplay.component';
 import { LocalStorageService } from '../services/LocalStorageService';
+import { StatsQuiz } from '../base_classes/StatsQuiz';
 
 type PokemonInputData = {
   type1: string;
@@ -38,20 +39,18 @@ type PokemonInputData = {
   templateUrl: './pokemon.component.html',
   styleUrl: './pokemon.component.css',
 })
-export class PokemonComponent implements OnDestroy {
+export class PokemonComponent extends StatsQuiz implements OnDestroy {
   @ViewChild('chartRef', { static: false }) chartRef: ElementRef;
-  public chart: Chart;
-  public chartImg: string;
   constructor(
-    private storageService: LocalStorageService,
-    private renderer: Renderer2
+    protected override storageService: LocalStorageService,
+    protected override renderer: Renderer2
   ) {
+    super(storageService, renderer);
     const settings: any = this.storageService.getItem('settings');
-    this.maxTimer = settings.timer || defaultSettings.timer;
-    this.maxRounds = settings.rounds || defaultSettings.rounds;
     this.bstRange = settings.bstRange || defaultSettings.bstRange;
     this.heightRange = settings.heightRange || defaultSettings.heightRange;
     this.weightRange = settings.weightRange || defaultSettings.weightRange;
+    this.timeBetween = settings.timeBetween || defaultSettings.timeBetween;
   }
 
   ngOnDestroy(): void {
@@ -60,12 +59,6 @@ export class PokemonComponent implements OnDestroy {
 
   // Consts
   public PkmnTypes = PkmnTypes;
-  private P = new Pokedex({
-    protocol: 'https',
-    cache: true,
-    timeout: 5000,
-    cacheImages: true,
-  });
 
   // Pokemon Data
   public pkmndata: Object = {};
@@ -93,7 +86,7 @@ export class PokemonComponent implements OnDestroy {
   };
 
   // Statistic Data
-  private statistics = {
+  protected override statistics = {
     bst: 0,
     type: 0,
     generation: 0,
@@ -105,32 +98,20 @@ export class PokemonComponent implements OnDestroy {
   // Guess Data
   public guesses: Array<boolean> = [...new Array(6)].map(() => false);
 
-  // Other Data
-  public score: number = 0;
-  public round: number;
-  public status: number = 0;
-  public maxscore: number = 0;
-  public timer: number;
-  public timerHolder: NodeJS.Timeout;
-  public fetchTimeout: NodeJS.Timeout;
-
   // Settings
-  public maxTimer: number;
-  private maxRounds: number;
   private bstRange: number;
   private heightRange: number;
   private weightRange: number;
 
   // Functions
   // Ids range from 1-1025 and 10001-10277 (Forms such as Deoxys-Attack)
-  fetchPokemon(): void {
+  override fetchData(): void {
     let pkmnID: number;
     do {
       pkmnID = Math.floor(Math.random() * 10277) + 1;
     } while (pkmnID > 1025 && pkmnID < 10001);
     this.P.resource('https://pokeapi.co/api/v2/pokemon/' + pkmnID).then(
       (data) => {
-        console.log(data);
         this.pkmndata = data;
         this.name = data.species.name;
         this.displayName = this.name[0].toUpperCase() + this.name.substring(1);
@@ -156,7 +137,7 @@ export class PokemonComponent implements OnDestroy {
     );
   }
 
-  generateGraph(): void {
+  override generateGraph(): void {
     let context = this.chartRef.nativeElement.getContext('2d');
     const guessdata = [
       this.statistics.type,
@@ -225,16 +206,7 @@ export class PokemonComponent implements OnDestroy {
     });
   }
 
-  downloadGraph() {
-    const anchor = this.renderer.createElement('a');
-    anchor.setAttribute('target', '_self');
-    anchor.setAttribute('href', this.chartImg);
-    anchor.setAttribute('download', 'chart.png');
-    anchor.click();
-    anchor.remove();
-  }
-
-  updateInputData(target: any, field: string): void {
+  override updateInputData(target: any, field: string): void {
     if (target !== null) {
       switch (field) {
         case 'type1':
@@ -270,12 +242,12 @@ export class PokemonComponent implements OnDestroy {
     }
   }
 
-  updateGameStatus(status: number): void {
+  override updateGameStatus(status: number): void {
     // 0 is the start, 1 is game running, 2 is generating new pokemon, 3 is game end, 4 is statistics
     this.status = status;
     if (status === 1) {
       this.timer = this.maxTimer;
-      this.timerHolder = setInterval(this.decrementTimer, 1000);
+      this.timerHolder = setInterval(() => this.decrementTimer(), 1000);
     }
     if (status === 2) {
       this.nextRound();
@@ -287,15 +259,29 @@ export class PokemonComponent implements OnDestroy {
     }
   }
 
-  startGame(): void {
-    this.round = 1;
-    this.fetchPokemon();
-    this.updateGameStatus(1);
-  }
-
-  resetGame() {
+  override resetGame() {
     this.score = 0;
     this.maxscore = 0;
+    this.resetInputData();
+    this.name = '';
+    this.sprite = '';
+    this.types.length = 0;
+    this.abilities.length = 0;
+    this.statistics = {
+      bst: 0,
+      type: 0,
+      generation: 0,
+      abilities: 0,
+      height: 0,
+      weight: 0,
+    };
+    for (let i = 0; i < this.guesses.length; i++) {
+      this.guesses[i] = false;
+    }
+    this.startGame();
+  }
+
+  override advanceRound(): void {
     this.resetInputData();
     this.name = '';
     this.sprite = '';
@@ -304,40 +290,8 @@ export class PokemonComponent implements OnDestroy {
     for (let i = 0; i < this.guesses.length; i++) {
       this.guesses[i] = false;
     }
-    this.startGame();
+    super.advanceRound();
   }
-
-  nextRound(): void {
-    clearInterval(this.timerHolder);
-    if (this.round >= this.maxRounds) {
-      this.fetchTimeout = setTimeout(() => {
-        this.updateGameStatus(3);
-        return;
-      }, 3000);
-    } else {
-      this.fetchTimeout = setTimeout(() => {
-        this.resetInputData();
-        this.name = '';
-        this.sprite = '';
-        this.types.length = 0;
-        this.abilities.length = 0;
-        for (let i = 0; i < this.guesses.length; i++) {
-          this.guesses[i] = false;
-        }
-        this.fetchPokemon();
-        this.updateGameStatus(1);
-        this.round++;
-      }, 3000);
-    }
-  }
-
-  decrementTimer = () => {
-    if (this.timer <= 0) {
-      this.makeGuess(new Event('none'));
-    } else {
-      this.timer--;
-    }
-  };
 
   resetInputData(): void {
     this.inputData.ability1 = 'None';
@@ -351,7 +305,7 @@ export class PokemonComponent implements OnDestroy {
     this.inputData.type2 = 'None';
   }
 
-  makeGuess(e: Event): void {
+  override makeGuess(e: Event): void {
     e.preventDefault();
     this.maxscore += 6;
     if (this.generation === this.inputData.generation) {
@@ -394,13 +348,17 @@ export class PokemonComponent implements OnDestroy {
     const a2: string = FormatInput(this.inputData.ability2);
     const a3: string = FormatInput(this.inputData.ability3);
     if (this.abilities.length === 1) {
-      if (a1 === this.abilities[0] && a2 === '' && a3 === '') {
+      if (a1 === this.abilities[0] && a2 === 'none' && a3 === 'none') {
         this.score++;
         this.statistics.abilities++;
         this.guesses[3] = true;
       }
     } else if (this.abilities.length === 2) {
-      if (a1 === this.abilities[0] && a3 === this.abilities[1] && a2 === '') {
+      if (
+        a1 === this.abilities[0] &&
+        a3 === this.abilities[1] &&
+        a2 === 'none'
+      ) {
         this.score++;
         this.statistics.abilities++;
         this.guesses[3] = true;

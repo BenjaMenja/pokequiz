@@ -1,18 +1,17 @@
 import { Component, OnDestroy } from '@angular/core';
-import { FormatInput } from '../constants';
-import { NgIf } from '@angular/common';
-import { DiffdisplayComponent } from '../diffdisplay/diffdisplay.component';
-import { RouterModule } from '@angular/router';
 import { BasicQuiz } from '../base_classes/BasicQuiz';
+import { NgIf } from '@angular/common';
 import { LocalStorageService } from '../services/LocalStorageService';
+import { DiffdisplayComponent } from '../diffdisplay/diffdisplay.component';
+import { FormatInput } from '../constants';
 
 @Component({
-  selector: 'app-cries',
-  imports: [NgIf, DiffdisplayComponent, RouterModule],
-  templateUrl: './cries.component.html',
-  styleUrl: './cries.component.css',
+  selector: 'app-sprites',
+  imports: [NgIf, DiffdisplayComponent],
+  templateUrl: './sprites.component.html',
+  styleUrl: './sprites.component.css',
 })
-export class CriesComponent extends BasicQuiz implements OnDestroy {
+export class SpritesComponent extends BasicQuiz implements OnDestroy {
   constructor(protected override storageService: LocalStorageService) {
     super(storageService);
   }
@@ -22,21 +21,16 @@ export class CriesComponent extends BasicQuiz implements OnDestroy {
     clearTimeout(this.fetchTimeout);
   }
 
-  // Quiz Data
-  public cryData: string = '';
-  public pkmnName: string = '';
   public sprite: string = '';
+  public pkmnName: string = '';
   public nameGuess: string = '';
-  public correct: boolean = false;
-  private volume: number = 0.25;
+  public correct: boolean;
 
-  override fetchData() {
-    // Don't include special forms because their cries will be the same
+  override fetchData(): void {
     const PkmnID: number = Math.floor(Math.random() * 1025) + 1;
     try {
       this.P.resource('https://pokeapi.co/api/v2/pokemon/' + PkmnID).then(
         (data) => {
-          this.cryData = data.cries.latest;
           this.pkmnName = data.name;
           this.sprite = data.sprites.front_default;
         }
@@ -72,35 +66,21 @@ export class CriesComponent extends BasicQuiz implements OnDestroy {
   override resetGame() {
     this.score = 0;
     this.maxscore = 0;
-    this.cryData = '';
     this.nameGuess = '';
+    this.sprite = '';
     this.correct = false;
     this.startGame();
   }
 
   override advanceRound(): void {
-    this.cryData = '';
     this.nameGuess = '';
     this.correct = false;
     super.advanceRound();
   }
 
-  changeVolume(target: any) {
-    if (target !== null) {
-      this.volume = target.value;
-    }
-  }
-
-  playAudio() {
-    const audio: HTMLAudioElement = new Audio(this.cryData);
-    audio.volume = this.volume;
-    audio.play();
-  }
-
   override makeGuess(e: Event): void {
     e.preventDefault();
     this.maxscore++;
-    this.playAudio();
     if (this.pkmnName === FormatInput(this.nameGuess)) {
       this.score++;
       this.correct = true;

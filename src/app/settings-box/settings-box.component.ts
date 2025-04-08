@@ -24,8 +24,12 @@ export class SettingsBoxComponent implements OnDestroy {
 
   updateSettings(key: string, target: any): void {
     if (target !== null && key in this.settings) {
-      this.settings[key] = target.value;
-      console.log('Update');
+      const value = parseInt(target.value);
+      if (isNaN(value)) {
+        this.settings[key] = target.value;
+      } else {
+        this.settings[key] = value;
+      }
     }
   }
 

@@ -4,41 +4,45 @@
     <div class="card border-2 justify-items-center">
       <h3><u>General</u></h3>
       <div class="inputfield">
-        <label>Timer Length</label>
+        <label title="Maximum time given to make your guess. Value must be between 1 and 100 (inclusive)">Timer Length</label>
         <input type="number" min="1" max="100" [value]="settings['timer']" placeholder="Timer" (change)="updateSettings('timer', $event.target)"/>
       </div>
       <div class="inputfield">
-        <label>Number of Rounds</label>
+        <label title="Number of rounds per quiz. Value must be between 1 and 100 (inclusive)">Number of Rounds</label>
         <input type="number" min="1" max="100" [value]="settings['rounds']" placeholder="Rounds" (change)="updateSettings('rounds', $event.target)"/>
+      </div>
+      <div class="inputfield">
+        <label title="Time between rounds. Value must be between 0 and 100 (inclusive). A value of 0 disables the waiting time and requires the user to click the Next Round button to proceed.">Time Between Rounds</label>
+        <input type="number" min="0" max="100" [value]="settings['timeBetween']" placeholder="Time" (change)="updateSettings('timeBetween', $event.target)"/>
       </div>
     </div>
     <div class="card border-2 justify-items-center">
       <h3><u>Pokemon Quiz</u></h3>
       <div class="inputfield">
-        <label>Base Stat Range</label>
+        <label title="The answer to the base stat total question must be within this range to be counted as correct. Value must be at least 0. A value of 0 means you must be exactly correct!">Base Stat Range</label>
         <input type="number" min="0" [value]="settings['bstRange']" placeholder="Base Stat" (change)="updateSettings('bstRange', $event.target)"/>
       </div>
       <div class="inputfield">
-        <label>Height Range</label>
+        <label title="The answer to the height question must be within this range to be counted as correct. Value must be at least 0. A value of 0 means you must be exactly correct! As a reminder, height is measured in meters.">Height Range</label>
         <input type="number" min="0" [value]="settings['heightRange']" placeholder="Height" (change)="updateSettings('heightRange', $event.target)"/>
       </div>
       <div class="inputfield">
-        <label>Weight Range</label>
+        <label title="The answer to the weight question must be within this range to be counted as correct. Value must be at least 0. A value of 0 means you must be exactly correct! As a reminder, weight is measured in kilograms.">Weight Range</label>
         <input type="number" min="0" [value]="settings['weightRange']" placeholder="Weight" (change)="updateSettings('weightRange', $event.target)"/>
       </div>
     </div>
     <div class="card border-2 justify-items-center">
       <h3><u>Move Quiz</u></h3>
       <div class="inputfield">
-        <label>PP Range</label>
+        <label title="The answer to the Max PP question must be within this range to be counted as correct. Value must be at least 0. A value of 0 means you must be exactly correct! As a reminder, the maximum amount of PP a move can have is 40.">PP Range</label>
         <input type="number" min="0" [value]="settings['ppRange']" placeholder="PP" (change)="updateSettings('ppRange', $event.target)"/>
       </div>
       <div class="inputfield">
-        <label>Power Range</label>
+        <label title="The answer to the power question must be within this range to be counted as correct. Value must be at least 0. A value of 0 means you must be exactly correct!">Power Range</label>
         <input type="number" min="0" [value]="settings['powerRange']" placeholder="Power" (change)="updateSettings('powerRange', $event.target)"/>
       </div>
       <div class="inputfield">
-        <label>Accuracy Range</label>
+        <label title="The answer to the accuracy question must be within this range to be counted as correct. Value must be at least 0. A value of 0 means you must be exactly correct!">Accuracy Range</label>
         <input type="number" min="0" [value]="settings['accuracyRange']" placeholder="Accuracy" (change)="updateSettings('accuracyRange', $event.target)"/>
       </div>
     </div>
