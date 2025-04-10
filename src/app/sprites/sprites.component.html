@@ -16,7 +16,7 @@
   <div *ngIf="status === 1 || status === 2" class="card w-2/3 space-y-4">
     <h3 *ngIf="(status === 1) || (status === 2 && timeBetween > 0)">Time Remaining: {{timer}}s</h3>
     <button *ngIf="(status === 2) && (timeBetween === 0)" type="button" role="button" (click)="advanceRound()">Next Round</button>
-    <form *ngIf="status === 1" class="col-start-3 space-y-5 justify-self-center justify-items-center w-1/2" (keydown.enter)="makeGuess($event)">
+    <form *ngIf="status === 1" class="col-start-3 space-y-5 justify-self-center justify-items-center w-1/2" (keydown.enter)="$event.preventDefault()">
       <img src={{sprite}} alt="Pokemon Sprite"/>
       <div class="inputfield">
         <label title="The name of the Pokemon">Name</label>

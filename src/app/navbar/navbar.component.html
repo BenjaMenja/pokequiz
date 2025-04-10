@@ -6,6 +6,11 @@
   <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/sprites">Sprites</a>
   <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/info">Info</a>
   <img src="assets/settings.png" alt="Settings Button" class="p-2 rounded-md hover:bg-gray-400 hover:cursor-pointer" (click)="toggleSettings()"/>
+  <div class="flex ml-auto items-center" *ngIf="changelog">
+    <span>Whats new? -&gt;</span>
+    <img src="assets/changelog.svg" width="46" height="auto" alt="Settings Button" class="p-2 rounded-md hover:bg-gray-400 hover:cursor-pointer" routerLink="/changelog"/>
+  </div>
+
 
 </nav>
 <app-settings-box class="absolute" [active]="settings"></app-settings-box>

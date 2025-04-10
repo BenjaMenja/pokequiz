@@ -5,6 +5,7 @@ import { InfoComponent } from './info/info.component';
 import { CriesComponent } from './cries/cries.component';
 import { HomeComponent } from './home/home.component';
 import { SpritesComponent } from './sprites/sprites.component';
+import { ChangelogComponent } from './changelog/changelog.component';
 
 export const routes: Routes = [
   { path: 'pokemon', component: PokemonComponent },
@@ -12,5 +13,6 @@ export const routes: Routes = [
   { path: 'cries', component: CriesComponent },
   { path: 'info', component: InfoComponent },
   { path: 'sprites', component: SpritesComponent },
+  { path: 'changelog', component: ChangelogComponent },
   { path: '', component: HomeComponent },
 ];

@@ -1,5 +1,16 @@
 # Full Changelog
 
+### v1.0.2 <- NEW
+
+**Additions**
+
+- Added the changelog page and a one time notification to the navigation bar when an update to the page happens
+
+**Fixes**
+
+- Fixed being able to use the enter key to guess on the cries and sprites quizzes.
+- Fixed text error in the info page.
+
 ### v1.0.1
 
 **Additions**

@@ -52,4 +52,13 @@
   .clickable {
     @apply hover:bg-white hover:cursor-pointer;
   }
+
+  .changelog ul {
+    @apply list-disc list-inside;
+  }
+
+  .changelog h2,
+  h3 {
+    @apply underline py-2;
+  }
 }
