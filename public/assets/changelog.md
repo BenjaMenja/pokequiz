@@ -1,6 +1,18 @@
 # Full Changelog
 
-### v1.0.2 <- NEW
+### v1.0.3 <- NEW
+
+**Additions**
+
+- Settings now apply immediately after being saved, instead of requiring a page refresh. If a game is in progress, they will be stored and applied once the game ends or a new quiz is selected.
+- Added a button to close the settings box within the box itself.
+
+**Fixes**
+
+- Fixed empty values being present in settings. Settings should now always have a default value.
+- Fixed the lack of an indicator when hovering over the setting descriptions in the settings box.
+
+### v1.0.2
 
 **Additions**
 

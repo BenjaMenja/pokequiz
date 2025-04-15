@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   OnDestroy,
+  OnInit,
   Renderer2,
   ViewChild,
 } from '@angular/core';
@@ -15,11 +16,11 @@ import {
   MoveCategories,
   PkmnTypes,
 } from '../constants';
-import { Pokedex } from 'pokeapi-js-wrapper';
 import { NgFor, NgIf } from '@angular/common';
 import { LocalStorageService } from '../services/LocalStorageService';
 import { RouterModule } from '@angular/router';
 import { StatsQuiz } from '../base_classes/StatsQuiz';
+import { Subscription } from 'rxjs';
 
 type MoveData = {
   name: string;
@@ -37,8 +38,10 @@ type MoveData = {
   templateUrl: './moves.component.html',
   styleUrl: './moves.component.css',
 })
-export class MovesComponent extends StatsQuiz implements OnDestroy {
+export class MovesComponent extends StatsQuiz implements OnDestroy, OnInit {
   @ViewChild('chartRef', { static: false }) chartRef: ElementRef;
+  private settingsSub: Subscription;
+
   constructor(
     protected override storageService: LocalStorageService,
     protected override renderer: Renderer2
@@ -50,7 +53,20 @@ export class MovesComponent extends StatsQuiz implements OnDestroy {
     this.accuracyRange = settings.accuracyRange || defaultSettings.weightRange;
   }
 
+  ngOnInit(): void {
+    this.settingsSub = this.storageService.settings$.subscribe(
+      (newSettings) => {
+        if (this.status === 1 || this.status === 2) {
+          this.pendingSettings = newSettings;
+        } else {
+          this.updateSettings(newSettings);
+        }
+      }
+    );
+  }
+
   ngOnDestroy(): void {
+    this.settingsSub.unsubscribe();
     clearInterval(this.timerHolder);
     clearTimeout(this.fetchTimeout);
   }
@@ -229,6 +245,9 @@ export class MovesComponent extends StatsQuiz implements OnDestroy {
   override updateGameStatus(status: number): void {
     // 0 is the start, 1 is game running, 2 is generating new move, 3 is game end, 4 is statistics
     this.status = status;
+    if (status !== 1 && status !== 2 && this.pendingSettings !== null) {
+      this.updateSettings(this.pendingSettings);
+    }
     if (status === 1) {
       this.timer = this.maxTimer;
       this.timerHolder = setInterval(() => this.decrementTimer(), 1000);
@@ -241,6 +260,13 @@ export class MovesComponent extends StatsQuiz implements OnDestroy {
         this.generateGraph();
       }, 0);
     }
+  }
+
+  updateSettings(settings: any) {
+    super.applySettings(settings);
+    this.ppRange = settings.ppRange;
+    this.powerRange = settings.powerRange;
+    this.accuracyRange = settings.accuracyRange;
   }
 
   override resetGame() {

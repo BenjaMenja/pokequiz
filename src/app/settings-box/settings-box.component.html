@@ -1,5 +1,8 @@
 <div class="card" *ngIf="active">
-  <h2><u><b>Settings</b></u></h2>
+  <div class="flex items-center mb-2">
+    <h2><u><b>Settings</b></u></h2>
+    <button class="ml-auto bg-red-700 hover:bg-red-500" (click)="closeSettings()" title="Close">X</button>
+  </div>
   <div class="gap-x-2 ">
     <div class="card border-2 justify-items-center">
       <h3><u>General</u></h3>

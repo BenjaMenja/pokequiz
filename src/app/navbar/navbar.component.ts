@@ -18,7 +18,7 @@ import { LocalStorageService } from '../services/LocalStorageService';
 export class NavbarComponent {
   public settings: boolean = false;
   public changelog: boolean = false;
-  private version: string = '1.0.2';
+  private version: string = '1.0.3';
 
   constructor(
     private router: Router,

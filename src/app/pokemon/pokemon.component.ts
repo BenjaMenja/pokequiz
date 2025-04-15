@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   OnDestroy,
+  OnInit,
   Renderer2,
   ViewChild,
 } from '@angular/core';
@@ -14,12 +15,12 @@ import {
   findGenerationByDexID,
   defaultSettings,
 } from '../constants';
-import { Pokedex } from 'pokeapi-js-wrapper';
 import { Chart } from 'chart.js/auto';
 import { RouterModule } from '@angular/router';
 import { DiffdisplayComponent } from '../diffdisplay/diffdisplay.component';
 import { LocalStorageService } from '../services/LocalStorageService';
 import { StatsQuiz } from '../base_classes/StatsQuiz';
+import { Subscription } from 'rxjs';
 
 type PokemonInputData = {
   type1: string;
@@ -39,22 +40,32 @@ type PokemonInputData = {
   templateUrl: './pokemon.component.html',
   styleUrl: './pokemon.component.css',
 })
-export class PokemonComponent extends StatsQuiz implements OnDestroy {
+export class PokemonComponent extends StatsQuiz implements OnDestroy, OnInit {
   @ViewChild('chartRef', { static: false }) chartRef: ElementRef;
+  private settingsSub: Subscription;
+
   constructor(
     protected override storageService: LocalStorageService,
     protected override renderer: Renderer2
   ) {
     super(storageService, renderer);
-    const settings: any = this.storageService.getItem('settings');
-    this.bstRange = settings.bstRange || defaultSettings.bstRange;
-    this.heightRange = settings.heightRange || defaultSettings.heightRange;
-    this.weightRange = settings.weightRange || defaultSettings.weightRange;
-    this.timeBetween = settings.timeBetween || defaultSettings.timeBetween;
+  }
+
+  ngOnInit(): void {
+    this.settingsSub = this.storageService.settings$.subscribe(
+      (newSettings) => {
+        if (this.status === 1 || this.status === 2) {
+          this.pendingSettings = newSettings;
+        } else {
+          this.updateSettings(newSettings);
+        }
+      }
+    );
   }
 
   ngOnDestroy(): void {
     clearInterval(this.timerHolder);
+    this.settingsSub.unsubscribe();
   }
 
   // Consts
@@ -245,6 +256,9 @@ export class PokemonComponent extends StatsQuiz implements OnDestroy {
   override updateGameStatus(status: number): void {
     // 0 is the start, 1 is game running, 2 is generating new pokemon, 3 is game end, 4 is statistics
     this.status = status;
+    if (status !== 1 && status !== 2 && this.pendingSettings !== null) {
+      this.updateSettings(this.pendingSettings);
+    }
     if (status === 1) {
       this.timer = this.maxTimer;
       this.timerHolder = setInterval(() => this.decrementTimer(), 1000);
@@ -257,6 +271,13 @@ export class PokemonComponent extends StatsQuiz implements OnDestroy {
         this.generateGraph();
       }, 0);
     }
+  }
+
+  updateSettings(settings: any) {
+    super.applySettings(settings);
+    this.bstRange = settings.bstRange;
+    this.heightRange = settings.heightRange;
+    this.weightRange = settings.weightRange;
   }
 
   override resetGame() {

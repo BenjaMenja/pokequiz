@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+label {
+  @apply hover:cursor-help underline decoration-dotted;
+}

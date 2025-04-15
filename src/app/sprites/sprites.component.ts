@@ -1,9 +1,10 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BasicQuiz } from '../base_classes/BasicQuiz';
 import { NgIf } from '@angular/common';
 import { LocalStorageService } from '../services/LocalStorageService';
 import { DiffdisplayComponent } from '../diffdisplay/diffdisplay.component';
 import { FormatInput } from '../constants';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sprites',
@@ -11,12 +12,26 @@ import { FormatInput } from '../constants';
   templateUrl: './sprites.component.html',
   styleUrl: './sprites.component.css',
 })
-export class SpritesComponent extends BasicQuiz implements OnDestroy {
+export class SpritesComponent extends BasicQuiz implements OnDestroy, OnInit {
+  private settingsSub: Subscription;
   constructor(protected override storageService: LocalStorageService) {
     super(storageService);
   }
 
+  ngOnInit(): void {
+    this.settingsSub = this.storageService.settings$.subscribe(
+      (newSettings) => {
+        if (this.status === 1 || this.status === 2) {
+          this.pendingSettings = newSettings;
+        } else {
+          this.updateSettings(newSettings);
+        }
+      }
+    );
+  }
+
   ngOnDestroy(): void {
+    this.settingsSub.unsubscribe();
     clearInterval(this.timerHolder);
     clearTimeout(this.fetchTimeout);
   }
@@ -54,6 +69,9 @@ export class SpritesComponent extends BasicQuiz implements OnDestroy {
 
   override updateGameStatus(status: number): void {
     this.status = status;
+    if (status !== 1 && status !== 2 && this.pendingSettings !== null) {
+      this.updateSettings(this.pendingSettings);
+    }
     if (status === 1) {
       this.timer = this.maxTimer;
       this.timerHolder = setInterval(() => this.decrementTimer(), 1000);
@@ -61,6 +79,10 @@ export class SpritesComponent extends BasicQuiz implements OnDestroy {
     if (status === 2) {
       this.nextRound();
     }
+  }
+
+  updateSettings(settings: any) {
+    super.applySettings(settings);
   }
 
   override resetGame() {

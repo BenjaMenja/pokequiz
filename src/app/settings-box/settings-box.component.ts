@@ -50,4 +50,8 @@ export class SettingsBoxComponent implements OnDestroy {
       this.storageService.setItem(this.settingsKey, defaultSettings);
     }
   }
+
+  closeSettings() {
+    this.active = !this.active;
+  }
 }

@@ -12,6 +12,7 @@ interface BasicQuizFunctions {
   advanceRound(): void;
   decrementTimer(): void;
   makeGuess(e: Event): void;
+  applySettings(settings: any): void;
 }
 
 export class BasicQuiz implements BasicQuizFunctions {
@@ -19,6 +20,7 @@ export class BasicQuiz implements BasicQuizFunctions {
   protected maxTimer: number;
   protected maxRounds: number;
   protected timeBetween: number;
+  protected pendingSettings: any = null;
 
   // Game Data
   protected score: number = 0;
@@ -135,4 +137,16 @@ export class BasicQuiz implements BasicQuizFunctions {
    * @param e The event that triggers this guess.
    */
   makeGuess(e: Event): void {}
+
+  /**
+   * Applies new settings to the quiz. Can only be done while a game is not active.
+   * @param settings A settings object
+   */
+  applySettings(settings: any): void {
+    if (this.status !== 1) {
+      this.maxTimer = settings.timer;
+      this.maxRounds = settings.rounds;
+      this.timeBetween = settings.timeBetween;
+    }
+  }
 }
