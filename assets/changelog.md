@@ -1,6 +1,17 @@
 # Full Changelog
 
-### v1.0.3 <- NEW
+### v1.0.4 <-- NEW
+
+**Additions**
+
+- Added styling support for mobile devices.
+- Text now updates when clicking the reset button in settings.
+
+**Fixes**
+
+- Fixed the info button not working on the sprites quiz page.
+
+### v1.0.3
 
 **Additions**
 
@@ -16,7 +27,7 @@
 
 **Additions**
 
-- Added the changelog page and a one time notification to the navigation bar when an update to the page happens
+- Added the changelog page and a one time notification to the navigation bar when an update to the page happens.
 
 **Fixes**
 
