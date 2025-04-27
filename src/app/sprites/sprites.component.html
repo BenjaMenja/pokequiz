@@ -1,23 +1,23 @@
 <div class="space-y-8 justify-items-center">
   <div *ngIf="status === 0">
-    <div class="card justify-items-center">
-      <img src="assets/welcome.png" class="w-1/2" alt="Welcome Title"/>
+    <div class="card">
+      <img src="assets/welcome.png" class="w-1/2 mx-auto" alt="Welcome Title"/>
       <p>PokeQuiz is a ten round quiz, testing your knowledge of Pokemon sprites!</p>
       <p>You will have {{maxTimer}} seconds per round to guess the Pokemon based on its in-game sprite.</p>
       <p>You will be scored based on how many Pokemon you successfully guess.</p>
       <p>Good Luck!</p>
     </div>
-    <div class="flex flex-row gap-2 justify-center">
+    <div class="flex flex-row gap-2 justify-center mb-2">
       <button routerLink="/info" class="mt-2">Info</button>
       <button (click)="startGame()" class="mt-2">Begin</button>
     </div>
   </div>
   <!-- HTML for the actual game -->
-  <div *ngIf="status === 1 || status === 2" class="card w-2/3 space-y-4">
+  <div *ngIf="status === 1 || status === 2" class="card" [ngClass]="contentClass">
     <h3 *ngIf="(status === 1) || (status === 2 && timeBetween > 0)">Time Remaining: {{timer}}s</h3>
     <button *ngIf="(status === 2) && (timeBetween === 0)" type="button" role="button" (click)="advanceRound()">Next Round</button>
-    <form *ngIf="status === 1" class="col-start-3 space-y-5 justify-self-center justify-items-center w-1/2" (keydown.enter)="$event.preventDefault()">
-      <img src={{sprite}} alt="Pokemon Sprite"/>
+    <form *ngIf="status === 1" [ngClass]="formClass" (keydown.enter)="$event.preventDefault()">
+      <img src={{sprite}} alt="Pokemon Sprite" class="mx-auto"/>
       <div class="inputfield">
         <label title="The name of the Pokemon">Name</label>
         <input class="w-full" type="text" (change)="updateInputData($event.target, 'name')"/>
@@ -28,12 +28,15 @@
     <h3>Round {{round}}</h3>
   </div>
   <div *ngIf="status === 2" class="card justify-items-center">
-    <div class="flex flex-row gap-4 justify-center items-center">
-      <diffdisplay [data]="{name: nameGuess}" [title]="'Your Guess'"></diffdisplay>
-      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+    <div [ngClass]="diffDisplayClass">
+      <diffdisplay [data]="{name: nameGuess}" [title]="'Your Guess'" [mobileClass]="diffDisplayClass"></diffdisplay>
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16" *ngIf="diffDisplayClass === 'diff-display'">
         <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
       </svg>
-      <diffdisplay [data]="{name: pkmnName}" [guesses]="[correct]" [title]="'Answer'"></diffdisplay>
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 320 512" *ngIf="diffDisplayClass === 'diff-display-mobile'">
+        <path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/>
+      </svg>
+      <diffdisplay [data]="{name: pkmnName}" [guesses]="[correct]" [title]="'Answer'" [mobileClass]="diffDisplayClass"></diffdisplay>
     </div>
   </div>
   <!-- HTML for the end of game screen -->

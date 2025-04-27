@@ -3,3 +3,19 @@
 a {
   @apply text-[#6868ff] visited:text-[#0000EE] active:visited:text-[#FF0000];
 }
+
+.footer {
+  @apply w-3/4 ml-auto mr-auto;
+}
+
+.footer-mobile p {
+  @apply text-sm;
+}
+
+.disclaimer {
+  @apply text-sm;
+}
+
+.disclaimer-mobile {
+  @apply text-xs;
+}

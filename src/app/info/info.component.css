@@ -7,3 +7,27 @@
 .titlebar img {
   @apply group-hover:animate-bounce h-8 w-auto;
 }
+
+.container {
+  @apply space-y-6 w-1/2 mx-auto mb-6;
+}
+
+.container-mobile {
+  @apply space-y-6 w-11/12 mx-auto mb-6;
+}
+
+.title-img {
+  @apply w-2/5;
+}
+
+.subtitle-img {
+  @apply w-1/4;
+}
+
+.content {
+  @apply grid grid-cols-2 w-3/4 mx-auto gap-x-4;
+}
+
+.content-mobile {
+  @apply flex flex-col gap-y-4 w-11/12 mx-auto;
+}

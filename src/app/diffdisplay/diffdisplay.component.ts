@@ -1,10 +1,10 @@
-import { NgFor, NgStyle } from '@angular/common';
+import { NgClass, NgFor, NgStyle } from '@angular/common';
 import { Component, Input, OnChanges } from '@angular/core';
 import { FormatOutput } from '../constants';
 
 @Component({
   selector: 'diffdisplay',
-  imports: [NgFor, NgStyle],
+  imports: [NgFor, NgClass, NgStyle],
   templateUrl: './diffdisplay.component.html',
   styleUrl: './diffdisplay.component.css',
 })
@@ -14,6 +14,7 @@ export class DiffdisplayComponent<T extends Record<string, any>>
   @Input({ required: true }) data: T;
   @Input({ required: false }) guesses: Array<boolean>;
   @Input({ required: true }) title: string;
+  @Input({ required: true }) mobileClass: string;
   entries: [string, any][] = [];
 
   ngOnChanges(): void {

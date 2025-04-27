@@ -1,33 +1,38 @@
 <div class="space-y-8 justify-items-center">
   <div *ngIf="status === 0">
-    <div class="card justify-items-center">
-      <img src="assets/welcome.png" class="w-1/2" alt="Welcome Title"/>
+    <div class="card">
+      <img src="assets/welcome.png" class="w-1/2 mx-auto" alt="Welcome Title"/>
       <p>PokeQuiz is a ten round quiz, testing your knowledge of Pokemon cries!</p>
       <p>You will have {{maxTimer}} seconds per round to guess the Pokemon based on its cry.</p>
       <p>You will be scored based on how many cries you successfully guess.</p>
       <p>Good Luck!</p>
     </div>
-    <div class="flex flex-row gap-2 justify-center">
+    <div class="flex flex-row gap-2 justify-center mb-2">
       <button routerLink="/info" class="mt-2">Info</button>
       <button (click)="startGame()" class="mt-2">Begin</button>
     </div>
   </div>
   <!-- HTML for the actual game -->
-  <div *ngIf="status === 1 || status === 2" class="card w-2/3 space-y-4">
+  <div *ngIf="status === 1 || status === 2" class="card" [ngClass]="contentClass">
     <h3 *ngIf="(status === 1) || (status === 2 && timeBetween > 0)">Time Remaining: {{timer}}s</h3>
     <button *ngIf="(status === 2) && (timeBetween === 0)" type="button" role="button" (click)="advanceRound()">Next Round</button>
-    <form *ngIf="status === 1" class="col-start-3 space-y-5 justify-self-center items-center w-1/2" (keydown.enter)="$event.preventDefault()">
-      <svg class="justify-self-center hover:text-gray-400 hover:cursor-pointer" xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16" (click)="playAudio()">
-        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-        <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445"/>
-      </svg>
+    <audio #audioPlayer controls>
+      <source [src]="cryData">
+    </audio>
+    <form *ngIf="status === 1" [ngClass]="formClass" (keydown.enter)="$event.preventDefault()">
+      <button type="button" class="bg-transparent border-0" (click)="playAudio()" title="Play Audio">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+          <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445"/>
+        </svg>
+      </button>
       <div class="inputfield">
         <label>Volume</label>
-        <input type="range" min="0" max="0.5" step="0.01" class="col-start-3 p-0 accent-red-600" (change)="changeVolume($event.target)"/>
+        <input type="range" min="0" max="0.5" step="0.01" class="col-start-3 p-0 accent-red-600 w-full" (change)="changeVolume($event.target)"/>
       </div>
       <div class="inputfield">
         <label>Name</label>
-        <input class="w-1/6" type="text" (change)="updateInputData($event.target, 'name')" placeholder="Pokemon Name"/>
+        <input type="text" class="w-full" (change)="updateInputData($event.target, 'name')" placeholder="Pokemon Name"/>
       </div>
       <button *ngIf="status === 1" type="button" role="button" (click)="makeGuess($event)">Guess</button>
     </form>
@@ -35,13 +40,16 @@
     <h3>Round {{round}}</h3>
   </div>
   <div *ngIf="status === 2" class="card justify-items-center">
-    <img src={{sprite}} class="py-4" alt="Pokemon Sprite"/>
-    <div class="flex flex-row gap-4 justify-center items-center">
-      <diffdisplay [data]="{name: nameGuess}" [title]="'Your Guess'"></diffdisplay>
-      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+    <img src={{sprite}} class="py-4 mx-auto" alt="Pokemon Sprite"/>
+    <div [ngClass]="diffDisplayClass">
+      <diffdisplay [data]="{name: nameGuess}" [title]="'Your Guess'" [mobileClass]="diffDisplayClass"></diffdisplay>
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16" *ngIf="diffDisplayClass === 'diff-display'">
         <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
       </svg>
-      <diffdisplay [data]="{name: pkmnName}" [guesses]="[correct]" [title]="'Answer'"></diffdisplay>
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 320 512" *ngIf="diffDisplayClass === 'diff-display-mobile'">
+        <path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/>
+      </svg>
+      <diffdisplay [data]="{name: pkmnName}" [guesses]="[correct]" [title]="'Answer'" [mobileClass]="diffDisplayClass"></diffdisplay>
     </div>
   </div>
   <!-- HTML for the end of game screen -->

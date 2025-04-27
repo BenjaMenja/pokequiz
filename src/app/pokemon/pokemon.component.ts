@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -21,6 +21,11 @@ import { DiffdisplayComponent } from '../diffdisplay/diffdisplay.component';
 import { LocalStorageService } from '../services/LocalStorageService';
 import { StatsQuiz } from '../base_classes/StatsQuiz';
 import { Subscription } from 'rxjs';
+import {
+  BreakpointObserver,
+  Breakpoints,
+  BreakpointState,
+} from '@angular/cdk/layout';
 
 type PokemonInputData = {
   type1: string;
@@ -36,7 +41,7 @@ type PokemonInputData = {
 
 @Component({
   selector: 'app-pokemon',
-  imports: [NgFor, NgIf, RouterModule, DiffdisplayComponent],
+  imports: [NgFor, NgIf, NgClass, RouterModule, DiffdisplayComponent],
   templateUrl: './pokemon.component.html',
   styleUrl: './pokemon.component.css',
 })
@@ -46,7 +51,8 @@ export class PokemonComponent extends StatsQuiz implements OnDestroy, OnInit {
 
   constructor(
     protected override storageService: LocalStorageService,
-    protected override renderer: Renderer2
+    protected override renderer: Renderer2,
+    private breakpointObserver: BreakpointObserver
   ) {
     super(storageService, renderer);
   }
@@ -61,6 +67,20 @@ export class PokemonComponent extends StatsQuiz implements OnDestroy, OnInit {
         }
       }
     );
+    this.breakpointObserver
+      .observe([
+        Breakpoints.HandsetPortrait,
+        Breakpoints.TabletPortrait,
+        Breakpoints.Small,
+      ])
+      .subscribe((state: BreakpointState) => {
+        this.contentClass = state.matches ? 'content-mobile' : 'content';
+        this.formClass = state.matches ? 'form-mobile' : 'form';
+        this.chartClass = state.matches ? 'chart-mobile' : 'chart';
+        this.diffDisplayClass = state.matches
+          ? 'diff-display-mobile'
+          : 'diff-display';
+      });
   }
 
   ngOnDestroy(): void {
@@ -113,6 +133,12 @@ export class PokemonComponent extends StatsQuiz implements OnDestroy, OnInit {
   private bstRange: number;
   private heightRange: number;
   private weightRange: number;
+
+  // Styling Classes
+  public contentClass: string = 'content';
+  public formClass: string = 'form';
+  public diffDisplayClass: string = 'diff-display';
+  public chartClass: string = 'chart';
 
   // Functions
   // Ids range from 1-1025 and 10001-10277 (Forms such as Deoxys-Attack)
