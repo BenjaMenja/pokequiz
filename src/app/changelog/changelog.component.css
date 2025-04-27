@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.content {
+  @apply w-3/4 text-left mx-auto text-base;
+}
+
+.content-mobile {
+  @apply w-11/12 text-left mx-auto text-sm;
+}

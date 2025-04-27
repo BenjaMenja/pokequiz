@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+.nav {
+  @apply bg-[rgba(255,255,255,0.75)] gap-4 min-w-full text-black mb-8 items-center py-1;
+}
+
+.nav-items {
+  @apply flex flex-row p-2 gap-4 items-center;
+}
+
+.nav-items-mobile {
+  @apply flex flex-col p-2 items-center;
+}
+
+.changelog {
+  @apply flex ml-auto items-center;
+}
+
+.changelog-mobile {
+  @apply flex items-center;
+}

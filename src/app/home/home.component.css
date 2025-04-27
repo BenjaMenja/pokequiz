@@ -5,5 +5,13 @@
 }
 
 .row {
-  @apply grid grid-cols-2 justify-items-center items-center;
+  @apply flex flex-row px-2 items-center;
+}
+
+.content {
+  @apply flex flex-col justify-items-center;
+}
+
+.content-mobile {
+  @apply flex flex-col w-3/4 ml-auto mr-auto;
 }

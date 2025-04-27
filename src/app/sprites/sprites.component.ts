@@ -1,20 +1,29 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BasicQuiz } from '../base_classes/BasicQuiz';
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { LocalStorageService } from '../services/LocalStorageService';
 import { DiffdisplayComponent } from '../diffdisplay/diffdisplay.component';
 import { FormatInput } from '../constants';
 import { Subscription } from 'rxjs';
+import {
+  BreakpointObserver,
+  Breakpoints,
+  BreakpointState,
+} from '@angular/cdk/layout';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sprites',
-  imports: [NgIf, DiffdisplayComponent],
+  imports: [NgIf, NgClass, DiffdisplayComponent, RouterModule],
   templateUrl: './sprites.component.html',
   styleUrl: './sprites.component.css',
 })
 export class SpritesComponent extends BasicQuiz implements OnDestroy, OnInit {
   private settingsSub: Subscription;
-  constructor(protected override storageService: LocalStorageService) {
+  constructor(
+    protected override storageService: LocalStorageService,
+    private breakpointObserver: BreakpointObserver
+  ) {
     super(storageService);
   }
 
@@ -28,6 +37,19 @@ export class SpritesComponent extends BasicQuiz implements OnDestroy, OnInit {
         }
       }
     );
+    this.breakpointObserver
+      .observe([
+        Breakpoints.HandsetPortrait,
+        Breakpoints.TabletPortrait,
+        Breakpoints.Small,
+      ])
+      .subscribe((state: BreakpointState) => {
+        this.contentClass = state.matches ? 'content-mobile' : 'content';
+        this.formClass = state.matches ? 'form-mobile' : 'form';
+        this.diffDisplayClass = state.matches
+          ? 'diff-display-mobile'
+          : 'diff-display';
+      });
   }
 
   ngOnDestroy(): void {
@@ -40,6 +62,11 @@ export class SpritesComponent extends BasicQuiz implements OnDestroy, OnInit {
   public pkmnName: string = '';
   public nameGuess: string = '';
   public correct: boolean;
+
+  // Styling Classes
+  public contentClass: string = 'content';
+  public formClass: string = 'form';
+  public diffDisplayClass: string = 'diff-display';
 
   override fetchData(): void {
     const PkmnID: number = Math.floor(Math.random() * 1025) + 1;

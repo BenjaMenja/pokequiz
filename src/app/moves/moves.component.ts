@@ -16,11 +16,16 @@ import {
   MoveCategories,
   PkmnTypes,
 } from '../constants';
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { LocalStorageService } from '../services/LocalStorageService';
 import { RouterModule } from '@angular/router';
 import { StatsQuiz } from '../base_classes/StatsQuiz';
 import { Subscription } from 'rxjs';
+import {
+  BreakpointObserver,
+  Breakpoints,
+  BreakpointState,
+} from '@angular/cdk/layout';
 
 type MoveData = {
   name: string;
@@ -34,7 +39,7 @@ type MoveData = {
 
 @Component({
   selector: 'app-moves',
-  imports: [DiffdisplayComponent, NgIf, NgFor, RouterModule],
+  imports: [DiffdisplayComponent, NgIf, NgFor, NgClass, RouterModule],
   templateUrl: './moves.component.html',
   styleUrl: './moves.component.css',
 })
@@ -44,7 +49,8 @@ export class MovesComponent extends StatsQuiz implements OnDestroy, OnInit {
 
   constructor(
     protected override storageService: LocalStorageService,
-    protected override renderer: Renderer2
+    protected override renderer: Renderer2,
+    private breakpointObserver: BreakpointObserver
   ) {
     super(storageService, renderer);
     const settings: any = this.storageService.getItem('settings');
@@ -63,6 +69,20 @@ export class MovesComponent extends StatsQuiz implements OnDestroy, OnInit {
         }
       }
     );
+    this.breakpointObserver
+      .observe([
+        Breakpoints.HandsetPortrait,
+        Breakpoints.TabletPortrait,
+        Breakpoints.Small,
+      ])
+      .subscribe((state: BreakpointState) => {
+        this.contentClass = state.matches ? 'content-mobile' : 'content';
+        this.formClass = state.matches ? 'form-mobile' : 'form';
+        this.chartClass = state.matches ? 'chart-mobile' : 'chart';
+        this.diffDisplayClass = state.matches
+          ? 'diff-display-mobile'
+          : 'diff-display';
+      });
   }
 
   ngOnDestroy(): void {
@@ -113,6 +133,12 @@ export class MovesComponent extends StatsQuiz implements OnDestroy, OnInit {
   private ppRange: number;
   private powerRange: number;
   private accuracyRange: number;
+
+  // Styling Classes
+  public contentClass: string = 'content';
+  public formClass: string = 'form';
+  public diffDisplayClass: string = 'diff-display';
+  public chartClass: string = 'chart';
 
   override fetchData() {
     // PokeAPI has 919 moves in the database

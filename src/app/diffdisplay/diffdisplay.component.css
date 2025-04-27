@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.diff-display {
+  @apply text-lg;
+}
+
+.diff-display-mobile {
+  @apply text-base;
+}

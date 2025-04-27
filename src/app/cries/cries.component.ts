@@ -1,21 +1,36 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormatInput } from '../constants';
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { DiffdisplayComponent } from '../diffdisplay/diffdisplay.component';
 import { RouterModule } from '@angular/router';
 import { BasicQuiz } from '../base_classes/BasicQuiz';
 import { LocalStorageService } from '../services/LocalStorageService';
 import { Subscription } from 'rxjs';
+import {
+  BreakpointObserver,
+  Breakpoints,
+  BreakpointState,
+} from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-cries',
-  imports: [NgIf, DiffdisplayComponent, RouterModule],
+  imports: [NgIf, NgClass, DiffdisplayComponent, RouterModule],
   templateUrl: './cries.component.html',
   styleUrl: './cries.component.css',
 })
 export class CriesComponent extends BasicQuiz implements OnDestroy, OnInit {
   private settingsSub: Subscription;
-  constructor(protected override storageService: LocalStorageService) {
+  @ViewChild('audioPlayer') audioPlayer!: ElementRef;
+  constructor(
+    protected override storageService: LocalStorageService,
+    private breakpointObserver: BreakpointObserver
+  ) {
     super(storageService);
   }
 
@@ -29,6 +44,19 @@ export class CriesComponent extends BasicQuiz implements OnDestroy, OnInit {
         }
       }
     );
+    this.breakpointObserver
+      .observe([
+        Breakpoints.HandsetPortrait,
+        Breakpoints.TabletPortrait,
+        Breakpoints.Small,
+      ])
+      .subscribe((state: BreakpointState) => {
+        this.contentClass = state.matches ? 'content-mobile' : 'content';
+        this.formClass = state.matches ? 'form-mobile' : 'form';
+        this.diffDisplayClass = state.matches
+          ? 'diff-display-mobile'
+          : 'diff-display';
+      });
   }
 
   ngOnDestroy(): void {
@@ -45,12 +73,18 @@ export class CriesComponent extends BasicQuiz implements OnDestroy, OnInit {
   public correct: boolean = false;
   private volume: number = 0.25;
 
+  // Styling Classes
+  public contentClass: string = 'content';
+  public formClass: string = 'form';
+  public diffDisplayClass: string = 'diff-display';
+
   override fetchData() {
     // Don't include special forms because their cries will be the same
     const PkmnID: number = Math.floor(Math.random() * 1025) + 1;
     try {
       this.P.resource('https://pokeapi.co/api/v2/pokemon/' + PkmnID).then(
         (data) => {
+          this.cryData = '';
           this.cryData = data.cries.latest;
           this.pkmnName = data.name;
           this.sprite = data.sprites.front_default;
@@ -81,6 +115,10 @@ export class CriesComponent extends BasicQuiz implements OnDestroy, OnInit {
     if (status === 1) {
       this.timer = this.maxTimer;
       this.timerHolder = setInterval(() => this.decrementTimer(), 1000);
+      if (this.audioPlayer && this.audioPlayer.nativeElement) {
+        const audioElement = this.audioPlayer.nativeElement;
+        audioElement.src = this.cryData;
+      }
     }
     if (status === 2) {
       this.nextRound();
@@ -114,9 +152,18 @@ export class CriesComponent extends BasicQuiz implements OnDestroy, OnInit {
   }
 
   playAudio() {
-    const audio: HTMLAudioElement = new Audio(this.cryData);
-    audio.volume = this.volume;
-    audio.play();
+    const audioElement: HTMLAudioElement = this.audioPlayer.nativeElement;
+    if (this.audioPlayer && this.audioPlayer.nativeElement) {
+      audioElement.src = '';
+      audioElement.src = this.cryData;
+      audioElement.load();
+      audioElement.play().catch((err) => {
+        window.alert(err);
+        window.alert('Cry Data: ' + this.cryData);
+      });
+    } else {
+      window.alert('Audio Player not available');
+    }
   }
 
   override makeGuess(e: Event): void {

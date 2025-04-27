@@ -1,18 +1,19 @@
-<nav class="bg-[rgba(255,255,255,0.75)] flex flex-row p-2 gap-4 min-w-full text-black mb-8 items-center">
-  <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/">Home</a>
-  <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/pokemon">Pokemon</a>
-  <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/moves">Moves</a>
-  <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/cries">Cries</a>
-  <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/sprites">Sprites</a>
-  <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/info">Info</a>
-  <img src="assets/settings.png" alt="Settings Button" class="p-2 rounded-md hover:bg-gray-400 hover:cursor-pointer" (click)="toggleSettings()"/>
-  <div class="flex ml-auto items-center" *ngIf="changelog">
-    <span>Whats new? -&gt;</span>
-    <img src="assets/changelog.svg" width="46" height="auto" alt="Settings Button" class="p-2 rounded-md hover:bg-gray-400 hover:cursor-pointer" routerLink="/changelog"/>
+<nav class="nav">
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 50 50" *ngIf="navStyle === 'nav-items-mobile'" (click)="toggleItems()" class="ml-auto mr-auto">
+    <path d="M 5 8 A 2.0002 2.0002 0 1 0 5 12 L 45 12 A 2.0002 2.0002 0 1 0 45 8 L 5 8 z M 5 23 A 2.0002 2.0002 0 1 0 5 27 L 45 27 A 2.0002 2.0002 0 1 0 45 23 L 5 23 z M 5 38 A 2.0002 2.0002 0 1 0 5 42 L 45 42 A 2.0002 2.0002 0 1 0 45 38 L 5 38 z"></path>
+  </svg>
+  <div [ngClass]="navStyle" *ngIf="itemsVisible">
+    <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/">Home</a>
+    <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/pokemon">Pokemon</a>
+    <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/moves">Moves</a>
+    <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/cries">Cries</a>
+    <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/sprites">Sprites</a>
+    <a class="p-2 rounded-md hover:bg-gray-400" routerLink="/info">Info</a>
+    <img src="assets/settings.png" alt="Settings Button" class="p-2 rounded-md hover:bg-gray-400 hover:cursor-pointer" (click)="toggleSettings()"/>
+    <div [ngClass]="changelogStyle" *ngIf="changelog">
+      <span>Whats new? -&gt;</span>
+      <img src="assets/changelog.svg" width="46" height="auto" alt="Settings Button" class="p-2 rounded-md hover:bg-gray-400 hover:cursor-pointer" routerLink="/changelog"/>
+    </div>
   </div>
-
-
 </nav>
 <app-settings-box class="absolute" [active]="settings"></app-settings-box>
-
-

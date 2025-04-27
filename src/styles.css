@@ -26,15 +26,16 @@
   }
 
   h2 {
-    @apply text-2xl;
+    @apply lg:text-2xl sm:text-lg;
   }
 
   h3 {
-    @apply text-xl;
+    @apply lg:text-xl sm:text-base;
   }
 
-  p {
-    @apply text-lg;
+  p,
+  span {
+    @apply lg:text-lg sm:text-sm;
   }
 
   input {
