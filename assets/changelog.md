@@ -1,6 +1,16 @@
 # Full Changelog
 
-### v1.0.4 <-- NEW
+### v1.0.5 <-- NEW
+
+**Additions**
+
+- Pokemon with special forms (Ex. Urshifu Rapid Strike) or otherwise special names (Ex. Nidoran-f) now have properly formatted names.
+
+**Fixes**
+
+- Fixed multiple timers running if the Time Between Rounds setting was set to a value other than 0.
+
+### v1.0.4
 
 **Additions**
 
