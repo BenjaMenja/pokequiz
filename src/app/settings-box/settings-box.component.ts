@@ -46,7 +46,6 @@ export class SettingsBoxComponent implements OnDestroy {
     const reset: boolean = window.confirm(
       'This will reset all settings to default. Are you sure?'
     );
-    console.log(reset);
     if (reset) {
       this.storageService.setItem(this.settingsKey, defaultSettings);
       this.settings = defaultSettings;
