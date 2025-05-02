@@ -151,7 +151,6 @@ export class PokemonComponent extends StatsQuiz implements OnDestroy, OnInit {
     do {
       pkmnID = Math.floor(Math.random() * 10277) + 1;
     } while (pkmnID > 1025 && pkmnID < 10001);
-    pkmnID = 10226;
     this.P.resource('https://pokeapi.co/api/v2/pokemon/' + pkmnID).then(
       (data) => {
         console.log(data);
