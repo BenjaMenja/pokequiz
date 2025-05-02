@@ -187,3 +187,49 @@ export const defaultSettings = {
   powerRange: 0,
   accuracyRange: 0,
 }
+
+export const nameMap: any = {
+  29: 'Nidoran (Female)',
+  32: 'Nidoran (Male)',
+  122: 'Mr. Mime',
+  439: 'Mime Jr.',
+  555: 'Darmanitan',
+  718: 'Zygarde (50%)',
+  866: 'Mr. Rime',
+  902: 'Basculegion',
+  978: 'Tatsugiri',
+  982: 'Dudunsparce (Two Segment)',
+  10118: 'Zygarde (10% Power Construct)',
+  10119: 'Zygarde (50% Power Construct)',
+  10123: 'Oricorio (Pom-Pom)',
+  10146: 'Kommo-o (Totem)',
+  10155: 'Dusk Mane Necrozma',
+  10156: 'Dawn Wings Necrozma',
+  10157: 'Ultra Necrozma',
+  10177: 'Galarian Darmanitan',
+  10181: 'Zygarde (10%)',
+  10248: 'Basculegion',
+  10250: 'Paldean Tauros (Combat Breed)',
+  10251: 'Paldean Tauros (Blaze Breed)',
+  10252: 'Paldean Tauros (Aqua Breed)',
+}
+
+export function FormatMega(name: string) {
+  const parts: string[] = name.split('-')
+  let formatted: string = ''
+  const baseName: string[] = parts.filter(part => part !== 'mega' && part !== 'x' && part !== 'y');
+  const suffix = parts.includes('x') ? ' X' : parts.includes('y') ? ' Y' : ''
+  formatted = `Mega ${upper(baseName.join(' '))}${suffix}`
+  return formatted
+}
+
+export function SpecialFormFormatting(name: string) {
+  const split = FormatOutput(name).split(' ');
+  let slice = split;
+  split.forEach(word => {
+    if (['Gmax', 'Alola', 'Galar', 'Hisui', 'Paldea'].includes(word)) {
+      slice = split.slice(0, -1)
+    }
+  });
+  return `${slice[0]} (${slice.slice(1).join(' ')})`;
+}

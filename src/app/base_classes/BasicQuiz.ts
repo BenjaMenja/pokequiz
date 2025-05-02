@@ -83,20 +83,21 @@ export class BasicQuiz implements BasicQuizFunctions {
    */
   nextRound(): void {
     clearInterval(this.timerHolder);
-    if (this.timeBetween > 0) {
-      this.timer = this.timeBetween;
-      this.timerHolder = setInterval(() => this.decrementTimer(), 1000);
-    }
     if (this.round >= this.maxRounds) {
       clearInterval(this.timerHolder);
-      if (this.timeBetween !== 0) {
+      if (this.timeBetween > 0) {
+        this.timer = this.timeBetween;
+        this.timerHolder = setInterval(() => this.decrementTimer(), 1000);
         this.fetchTimeout = setTimeout(() => {
+          clearInterval(this.timerHolder);
           this.updateGameStatus(3);
           return;
         }, this.timeBetween * 1000);
       }
     } else {
       if (this.timeBetween > 0) {
+        this.timer = this.timeBetween;
+        this.timerHolder = setInterval(() => this.decrementTimer(), 1000);
         this.fetchTimeout = setTimeout(() => {
           this.advanceRound();
         }, this.timeBetween * 1000);
@@ -108,6 +109,9 @@ export class BasicQuiz implements BasicQuizFunctions {
    * Advances to the next round. Called by nextRound() after an amount of time set in the settings. Usually will reset data, fetch new data, increment the round, and reset the game status to 1.
    */
   advanceRound(): void {
+    if (this.timeBetween > 0) {
+      clearInterval(this.timerHolder);
+    }
     if (this.round >= this.maxRounds) {
       this.updateGameStatus(3);
     } else {

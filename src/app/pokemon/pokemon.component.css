@@ -13,7 +13,7 @@ label {
 }
 
 .form {
-  @apply space-y-5 justify-self-center items-center w-1/2;
+  @apply space-y-5 justify-self-center items-center w-2/3;
 }
 
 .form-mobile {

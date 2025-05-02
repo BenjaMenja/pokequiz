@@ -13,7 +13,11 @@ import {
   colorBar,
   findGeneration,
   findGenerationByDexID,
-  defaultSettings,
+  nameMap,
+  upper,
+  FormatOutput,
+  FormatMega,
+  SpecialFormFormatting,
 } from '../constants';
 import { Chart } from 'chart.js/auto';
 import { RouterModule } from '@angular/router';
@@ -147,11 +151,13 @@ export class PokemonComponent extends StatsQuiz implements OnDestroy, OnInit {
     do {
       pkmnID = Math.floor(Math.random() * 10277) + 1;
     } while (pkmnID > 1025 && pkmnID < 10001);
+    pkmnID = 10226;
     this.P.resource('https://pokeapi.co/api/v2/pokemon/' + pkmnID).then(
       (data) => {
+        console.log(data);
         this.pkmndata = data;
-        this.name = data.species.name;
-        this.displayName = this.name[0].toUpperCase() + this.name.substring(1);
+        this.name = data.name;
+        this.displayName = this.obtainDisplayName(pkmnID, this.name);
         this.sprite = data.sprites.front_default;
         this.height = data.height / 10;
         this.weight = data.weight / 10;
@@ -432,5 +438,58 @@ export class PokemonComponent extends StatsQuiz implements OnDestroy, OnInit {
       this.guesses[5] = true;
     }
     this.updateGameStatus(2);
+  }
+
+  /**
+   * Since some pokemon have special names (Ex. nidoran-f), this function converts special names to be more readable.
+   * Uses the constant name map for most forms. Some pokemon (such as Wo-Chien) actually have a hyphen in their name.
+   * Others have a hyphen in the API (Such as great-tusk) and need to be checked
+   * Other forms are handled separately (Ex. Galarian / Alolan / Paldean)
+   * @param index The pokedex number of the pokemon, used to determine whether this pokemon needs a name change
+   * @param name The original name, used if the index does not match
+   * @returns
+   */
+  private obtainDisplayName(index: number, name: string): string {
+    if (index in nameMap) {
+      return nameMap[index];
+    } else if (
+      [
+        'ho-oh',
+        'porygon-z',
+        'wo-chien',
+        'chien-pao',
+        'ting-lu',
+        'chi-yu',
+      ].includes(name)
+    ) {
+      return name
+        .split('-')
+        .map((part) => {
+          part = upper(part);
+          return part;
+        })
+        .join('-');
+    } else if (
+      (index >= 785 && index <= 788) ||
+      (index >= 984 && index <= 995) ||
+      (index >= 1005 && index <= 1006) ||
+      (index >= 1009 && index <= 1010) ||
+      (index >= 1020 && index <= 1023)
+    ) {
+      return FormatOutput(name);
+    } else if (name.includes('-mega')) {
+      return FormatMega(name);
+    } else if (name.includes('-alola')) {
+      return `Alolan ${SpecialFormFormatting(name)}`;
+    } else if (name.includes('-galar')) {
+      return `Galarian ${SpecialFormFormatting(name)}`;
+    } else if (name.includes('-gmax')) {
+      return `Gigantamax ${SpecialFormFormatting(name)}`;
+    } else if (name.includes('-hisui')) {
+      return `Hisuian ${SpecialFormFormatting(name)}`;
+    } else if (name.includes('-')) {
+      return SpecialFormFormatting(name);
+    }
+    return name[0].toUpperCase() + name.substring(1);
   }
 }
