@@ -6,6 +6,8 @@ import { CriesComponent } from './cries/cries.component';
 import { HomeComponent } from './home/home.component';
 import { SpritesComponent } from './sprites/sprites.component';
 import { ChangelogComponent } from './changelog/changelog.component';
+import { QuizGeneratorComponent } from './quiz-generator/quiz-generator.component';
+import { CustomQuizComponent } from './custom-quiz/custom-quiz.component';
 
 export const routes: Routes = [
   { path: 'pokemon', component: PokemonComponent },
@@ -14,5 +16,7 @@ export const routes: Routes = [
   { path: 'info', component: InfoComponent },
   { path: 'sprites', component: SpritesComponent },
   { path: 'changelog', component: ChangelogComponent },
+  { path: 'quiz-maker', component: QuizGeneratorComponent },
+  { path: 'custom-quiz', component: CustomQuizComponent },
   { path: '', component: HomeComponent },
 ];

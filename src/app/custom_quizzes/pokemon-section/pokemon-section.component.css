@@ -1,0 +1,13 @@
+@import 'tailwindcss';
+
+.box {
+  @apply border-2 border-black py-1 mb-1 w-full;
+}
+
+.types {
+  @apply grid grid-cols-4;
+}
+
+.types-mobile {
+  @apply grid grid-cols-3;
+}

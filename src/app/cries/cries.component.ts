@@ -53,9 +53,8 @@ export class CriesComponent extends BasicQuiz implements OnDestroy, OnInit {
       .subscribe((state: BreakpointState) => {
         this.contentClass = state.matches ? 'content-mobile' : 'content';
         this.formClass = state.matches ? 'form-mobile' : 'form';
-        this.diffDisplayClass = state.matches
-          ? 'diff-display-mobile'
-          : 'diff-display';
+        this.diffDisplayClass = state.matches ? 'diff-display-mobile' : 'diff-display';
+        this.titleCardClass = state.matches ? 'title-card-mobile' : 'title-card';
       });
   }
 
@@ -77,6 +76,7 @@ export class CriesComponent extends BasicQuiz implements OnDestroy, OnInit {
   public contentClass: string = 'content';
   public formClass: string = 'form';
   public diffDisplayClass: string = 'diff-display';
+  public titleCardClass: string = 'title-card';
 
   override fetchData() {
     // Don't include special forms because their cries will be the same

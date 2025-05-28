@@ -104,6 +104,75 @@ export const findGenerationByDexID = (id: number): number => {
   }
 }
 
+export const findPokemonIntervalsByGeneration = (generation: number): Array<Array<number>> => {
+  switch (generation) {
+    case 1:
+      return [[1, 151]]
+    case 2:
+      return [[152, 251]]
+    case 3:
+      return [[252, 386], [10001, 10003], [10013, 10015]]
+    case 4:
+      return [[387, 493], [10004, 10012]]
+    case 5:
+      return [[494, 649], [10016, 10024]]
+    case 6:
+      return [[650, 721], [10025, 10090]]
+    case 7:
+      return [[722, 809], [10091, 10159], [10181, 10181]]
+    case 8:
+      return [[810, 905], [10160, 10180], [10182, 10249]]
+    case 9:
+      return [[906, 1025], [10250, 10277]]
+  }
+  return [[0, 0]]
+}
+
+
+export const findAbilityIntervalsByGeneration = (generation: number): Array<number> => {
+  switch (generation) {
+    case 3:
+      return [1, 76]
+    case 4:
+      return [77, 123]
+    case 5:
+      return [124, 164]
+    case 6:
+      return [165, 191]
+    case 7:
+      return [192, 233]
+    case 8:
+      return [234, 267]
+    case 9:
+      return [268, 307]
+  }
+  return [0, 0]
+}
+
+export const findMoveIntervalsByGeneration = (generation: number): Array<number> => {
+  switch(generation) {
+    case 1:
+      return [1, 165]
+    case 2:
+      return [166, 251]
+    case 3:
+      return [252, 354]
+    case 4:
+      return [355, 467]
+    case 5:
+      return [468, 559]
+    case 6:
+      return [560, 621]
+    case 7:
+      return [622, 742]
+    case 8:
+      return [743, 850]
+    case 9:
+      return [851, 919]
+  }
+  return [0,0]
+}
+
 /**
  * Converts custom user input into a format to compare against data returned by the API
  * @param s User Input
@@ -232,4 +301,78 @@ export function SpecialFormFormatting(name: string) {
     }
   });
   return `${slice[0]} (${slice.slice(1).join(' ')})`;
+}
+
+/**
+ * Searches for the most recent (by generation) English description of a move
+ * @param text_entries A list of flavor_text_entries returned by the API
+ * @returns The most recent (by generation) flavor_text entry's value
+ */
+export function searchForDescription(text_entries: Array<any>): string {
+  for (let i = text_entries.length - 1; i >= 0; i--) {
+    if (text_entries[i].language.name === 'en') {
+      if (
+        !text_entries[i].flavor_text.includes(
+          'recommended that this move is forgotten'
+        ) &&
+        !text_entries[i].flavor_text.includes('Dummy Data')
+      ) {
+        return text_entries[i].flavor_text;
+      }
+    }
+  }
+  return 'r';
+}
+
+/**
+ * Since some pokemon have special names (Ex. nidoran-f), this function converts special names to be more readable.
+ * Uses the constant name map for most forms. Some pokemon (such as Wo-Chien) actually have a hyphen in their name.
+ * Others have a hyphen in the API (Such as great-tusk) and need to be checked
+ * Other forms are handled separately (Ex. Galarian / Alolan / Paldean)
+ * @param index The pokedex number of the pokemon, used to determine whether this pokemon needs a name change
+ * @param name The original name, used if the index does not match
+ * @returns
+ */
+export function obtainDisplayName(index: number, name: string): string {
+  if (index in nameMap) {
+    return nameMap[index];
+  } else if (
+    [
+      'ho-oh',
+      'porygon-z',
+      'wo-chien',
+      'chien-pao',
+      'ting-lu',
+      'chi-yu',
+    ].includes(name)
+  ) {
+    return name
+      .split('-')
+      .map((part) => {
+        part = upper(part);
+        return part;
+      })
+      .join('-');
+  } else if (
+    (index >= 785 && index <= 788) ||
+    (index >= 984 && index <= 995) ||
+    (index >= 1005 && index <= 1006) ||
+    (index >= 1009 && index <= 1010) ||
+    (index >= 1020 && index <= 1023)
+  ) {
+    return FormatOutput(name);
+  } else if (name.includes('-mega')) {
+    return FormatMega(name);
+  } else if (name.includes('-alola')) {
+    return `Alolan ${SpecialFormFormatting(name)}`;
+  } else if (name.includes('-galar')) {
+    return `Galarian ${SpecialFormFormatting(name)}`;
+  } else if (name.includes('-gmax')) {
+    return `Gigantamax ${SpecialFormFormatting(name)}`;
+  } else if (name.includes('-hisui')) {
+    return `Hisuian ${SpecialFormFormatting(name)}`;
+  } else if (name.includes('-')) {
+    return SpecialFormFormatting(name);
+  }
+  return name[0].toUpperCase() + name.substring(1);
 }

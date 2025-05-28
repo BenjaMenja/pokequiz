@@ -15,6 +15,7 @@ import {
   Generations,
   MoveCategories,
   PkmnTypes,
+  searchForDescription,
 } from '../constants';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { LocalStorageService } from '../services/LocalStorageService';
@@ -79,9 +80,8 @@ export class MovesComponent extends StatsQuiz implements OnDestroy, OnInit {
         this.contentClass = state.matches ? 'content-mobile' : 'content';
         this.formClass = state.matches ? 'form-mobile' : 'form';
         this.chartClass = state.matches ? 'chart-mobile' : 'chart';
-        this.diffDisplayClass = state.matches
-          ? 'diff-display-mobile'
-          : 'diff-display';
+        this.diffDisplayClass = state.matches ? 'diff-display-mobile' : 'diff-display';
+        this.titleCardClass = state.matches ? 'title-card-mobile' : 'title-card';
       });
   }
 
@@ -139,6 +139,7 @@ export class MovesComponent extends StatsQuiz implements OnDestroy, OnInit {
   public formClass: string = 'form';
   public diffDisplayClass: string = 'diff-display';
   public chartClass: string = 'chart';
+  public titleCardClass: string = 'title-card';
 
   override fetchData() {
     // PokeAPI has 919 moves in the database
@@ -146,9 +147,7 @@ export class MovesComponent extends StatsQuiz implements OnDestroy, OnInit {
     try {
       this.P.resource('https://pokeapi.co/api/v2/move/' + MoveID).then(
         (data) => {
-          this.moveDescription = this.searchForDescription(
-            data.flavor_text_entries
-          );
+          this.moveDescription = searchForDescription(data.flavor_text_entries);
           if (this.moveDescription === 'r') {
             this.moveDescription = data.name;
           }
@@ -332,27 +331,6 @@ export class MovesComponent extends StatsQuiz implements OnDestroy, OnInit {
     data.power = 0;
     data.category = 'physical';
     data.accuracy = 0;
-  }
-
-  /**
-   * Searches for the most recent (by generation) English description of a move
-   * @param text_entries A list of flavor_text_entries returned by the API
-   * @returns The most recent (by generation) flavor_text entry's value
-   */
-  searchForDescription(text_entries: Array<any>): string {
-    for (let i = text_entries.length - 1; i >= 0; i--) {
-      if (text_entries[i].language.name === 'en') {
-        if (
-          !text_entries[i].flavor_text.includes(
-            'recommended that this move is forgotten'
-          ) &&
-          !text_entries[i].flavor_text.includes('Dummy Data')
-        ) {
-          return text_entries[i].flavor_text;
-        }
-      }
-    }
-    return 'r';
   }
 
   override makeGuess(e: Event): void {

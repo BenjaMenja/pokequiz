@@ -33,13 +33,22 @@
     @apply lg:text-xl sm:text-base;
   }
 
+  h4 {
+    @apply lg:text-lg sm:text-base;
+  }
+
   p,
   span {
     @apply lg:text-lg sm:text-sm;
   }
 
-  input {
+  input[type="text"],
+  input[type="number"] {
     @apply border-2 border-black rounded-md bg-white placeholder:text-gray-400 text-black w-24 p-1;
+  }
+
+  input[type="checkbox"] {
+    @apply mx-2;
   }
 
   .inputfield {
@@ -61,5 +70,13 @@
   .changelog h2,
   h3 {
     @apply underline py-2;
+  }
+
+  .title-card {
+    @apply w-3/5;
+  }
+
+  .title-card-mobile {
+    @apply w-11/12 mx-auto;
   }
 }

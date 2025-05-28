@@ -37,6 +37,7 @@ yarn-error.log
 testem.log
 /typings
 TODO.md
+/quiz-tests
 
 # System files
 .DS_Store

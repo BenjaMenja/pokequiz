@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+h2 {
+  @apply underline font-bold
+}
+
 .titlebar {
   @apply grid grid-cols-3 items-center justify-items-center;
 }
@@ -9,7 +13,7 @@
 }
 
 .container {
-  @apply space-y-6 w-1/2 mx-auto mb-6;
+  @apply space-y-6 w-3/4 mx-auto mb-6;
 }
 
 .container-mobile {

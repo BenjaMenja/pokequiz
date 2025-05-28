@@ -1,0 +1,167 @@
+<div class="space-y-8 justify-items-center">
+  <div *ngIf="status === 0" [ngClass]="titleCardClass">
+    <div class="card">
+      <img src="assets/quiz-player-title.png" class="mx-auto" alt="Quiz Maker Title Text"/>
+      <p>PokeQuiz supports custom made quizzes using the quiz editor!</p>
+      <p>To play a quiz, simply press Import to import a quiz!</p>
+      <p class="text-green-600" *ngIf="importStatus">Import success! Click Play to begin playing!</p>
+    </div>
+    <div class="flex flex-row gap-2 justify-center mb-2">
+      <button (click)="clickImport()">Import</button>
+      <button (click)="startQuiz()" *ngIf="importStatus">Play</button>
+      <input type="file" class="hidden" (change)="importQuiz($event)" #fileUpload>
+    </div>
+  </div>
+  <div *ngIf="status === 1 || status === 2" class="card" [ngClass]="contentClass">
+    <h3 *ngIf="(status === 1) || (status === 2 && timeBetween > 0)">Time Remaining: {{timer}}s</h3>
+    <button *ngIf="(status === 2) && (timeBetween === 0)" type="button" role="button" (click)="advanceRound()">Next Round</button>
+    <!-- Shows corresponding input field if that attribute exists in the "given" object -->
+    <h4 *ngIf="activeQuizGiven.name"><b>{{activeQuizGiven.name}}</b></h4>
+    <h4 *ngIf="activeQuizGiven.sprite"><img src={{activeQuizGiven.sprite}} class="mx-auto" alt="Pokemon Sprite"/></h4>
+    <h4 *ngIf="activeQuizGiven.description"><b>Description: {{activeQuizGiven.description}}</b></h4>
+    <h4 *ngIf="activeQuizSection.type === 'move' && activeQuizGiven.type"><b>Type: {{activeQuizGiven.type}}</b></h4>
+    <h4 *ngIf="activeQuizSection.type === 'pokemon' && activeQuizGiven.type"><b>Types: {{activeQuizGiven.type[0]}}, {{activeQuizGiven.type[1]}}</b></h4>
+    <h4 *ngIf="activeQuizGiven.generation"><b>Generation: {{activeQuizGiven.generation}}</b></h4>
+    <h4 *ngIf="activeQuizGiven.pp"><b>PP: {{activeQuizGiven.pp}}</b></h4>
+    <h4 *ngIf="activeQuizGiven.power"><b>Power: {{activeQuizGiven.power}}</b></h4>
+    <h4 *ngIf="activeQuizGiven.category"><b>Category: {{activeQuizGiven.category}}</b></h4>
+    <h4 *ngIf="activeQuizGiven.accuracy"><b>Generation: {{activeQuizGiven.accuracy}}</b></h4>
+    <h4 *ngIf="activeQuizGiven.abilities"><b>Abilities: <span *ngFor="let ability of activeQuizGiven.abilities">{{ability}}, </span></b></h4>
+    <h4 *ngIf="activeQuizGiven.bst"><b>Base Stat Total: {{activeQuizGiven.bst}}</b></h4>
+    <h4 *ngIf="activeQuizGiven.height"><b>Height: {{activeQuizGiven.height}}</b></h4>
+    <h4 *ngIf="activeQuizGiven.weight"><b>Weight: {{activeQuizGiven.weight}}</b></h4>
+    <h4 *ngIf="activeQuizGiven.evs"><b>EV Spread: 
+      <span>{{activeQuizGiven.evs[0]}} HP, </span>
+      <span>{{activeQuizGiven.evs[1]}} ATK, </span>
+      <span>{{activeQuizGiven.evs[2]}} DEF, </span>
+      <span>{{activeQuizGiven.evs[3]}} SPATK, </span>
+      <span>{{activeQuizGiven.evs[4]}} SPDEF, </span>
+      <span>{{activeQuizGiven.evs[5]}} SPD</span>
+    </b></h4>
+    <!-- Move Form -->
+    <form *ngIf="status === 1 && activeQuizSection.type === 'move'" [ngClass]="formClass" (keydown.enter)="$event.preventDefault()">
+      <div class="inputfield" *ngIf="activeQuizGuess.name">
+        <label title="The name of the move.">Name</label>
+        <input class="w-full" type="text" (change)="updateInputData($event.target, 'name')" placeholder="Move Name"/>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.type">
+        <label title="The move's type.">Type</label>
+        <select class="inline-flex justify-center bg-white text-black rounded-md w-full" (change)="updateInputData($event.target, 'type')">
+          <option *ngFor="let type of MoveTypes">{{type}}</option>
+        </select>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.generation">
+        <label title="The generation this move was introduced in.">Generation</label>
+        <input class="w-full" type="number" min="1" max="9" (change)="updateInputData($event.target, 'generation')" [defaultValue]="1"/>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.pp">
+        <label title="The maximum PP this move has, without PP increasing items.">PP</label>
+        <input class="w-full" type="number" min="1" max="40" (change)="updateInputData($event.target, 'pp')" [defaultValue]="1"/>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.power">
+        <label title="The power of this move. Set to 0 if this move deals no direct damage (Ex. Counter), has variable power (Ex. Magnitude), or is a OHKO move (Ex. Guillotine).">Power</label>
+        <input class="w-full" type="number" min="0" max="250" (change)="updateInputData($event.target, 'power')" [defaultValue]="0"/>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.category">
+        <label title="The category of this move.">Category</label>
+        <select class="inline-flex justify-center bg-white text-black rounded-md w-full" (change)="updateInputData($event.target, 'category')">
+          <option *ngFor="let type of MoveCategories">{{type}}</option>
+        </select>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.accuracy">
+        <label title="The accuracy of this move. Set to 0 for moves that do not miss (Ex. Feint Attack) or moves used on yourself (Ex. Growth).">Accuracy</label>
+        <input class="w-full" type="number" min="-1" max="100" (change)="updateInputData($event.target, 'accuracy')" [defaultValue]="0"/>
+      </div>
+      <button *ngIf="status === 1" type="button" role="button" (click)="makeGuess($event)">Guess</button>
+    </form>
+    <!-- Ability Form -->
+    <form *ngIf="status === 1 && activeQuizSection.type === 'ability'" [ngClass]="formClass" (keydown.enter)="$event.preventDefault()">
+      <div class="inputfield">
+        <label title="The name of the ability.">Name</label>
+        <input class="w-full" type="text" (change)="updateInputData($event.target, 'name')" placeholder="Ability Name"/>
+      </div>
+      <button *ngIf="status === 1" type="button" role="button" (click)="makeGuess($event)">Guess</button>
+    </form>
+    <!-- Pokemon Form -->
+    <form *ngIf="status === 1 && activeQuizSection.type === 'pokemon'" [ngClass]="formClass" (keydown.enter)="$event.preventDefault()">
+      <div class="inputfield" *ngIf="activeQuizGuess.name">
+        <label title="The name of the Pokemon.">Name</label>
+        <input class="w-full" type="text" (change)="updateInputData($event.target, 'name')" placeholder="Pokemon Name"/>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.type">
+        <label title="The type(s) this pokemon has. Order does not matter.">Types</label>
+        <select class="inline-flex justify-center bg-white text-black rounded-md w-full" (change)="updateInputData($event.target, 'type1')">
+          <option *ngFor="let type of PkmnTypes">{{type}}</option>
+        </select>
+        <select class="inline-flex justify-center bg-white text-black rounded-md w-full" (change)="updateInputData($event.target, 'type2')">
+          <option *ngFor="let type of PkmnTypes">{{type}}</option>
+        </select>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.generation">
+        <label title="The generation this pokemon was introduced in">Generation</label>
+        <input class="w-full" type="number" min="1" max="9" (change)="updateInputData($event.target, 'generation')" [defaultValue]="1"/>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.bst">
+        <label title="The sum of the pokemon's base stats.">Base Stat Total</label>
+        <input class="w-full" type="number" min="0" max="5000" (change)="updateInputData($event.target, 'bst')" [defaultValue]="1"/>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.abilities">
+        <label title="The possible abilities this pokemon can have. Order between ability 1 and 2 does not matter. However, the hidden ability must be in the appropriate spot!">Abilities</label>
+        <input class="w-full" type="text" (change)="updateInputData($event.target, 'ability1')" placeholder="Ability 1"/>
+        <input class="w-full" type="text" (change)="updateInputData($event.target, 'ability2')" placeholder="Ability 2"/>
+        <input class="w-full" type="text" (change)="updateInputData($event.target, 'ability3')" placeholder="Hidden"/>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.height">
+        <label title="The height of the pokemon in meters.">Height (m)</label>
+        <input class="w-full" type="number" (change)="updateInputData($event.target, 'height')" [defaultValue]="0"/>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.weight">
+        <label title="The weight of the pokemon in kilograms.">Weight (kg)</label>
+        <input class="w-full" type="number" (change)="updateInputData($event.target, 'weight')" [defaultValue]="0"/>
+      </div>
+      <div class="inputfield" *ngIf="activeQuizGuess.evs">
+        <label title="The effort value (EV) yield of the Pokemon. The boxes from left to right represent HP, Attack, Defense, Sp. Attack, Sp. Defense, and Speed respectively.">EV Yield</label>
+        <input class="w-full" type="number" min="0" max="3" (change)="updateInputData($event.target, 'EV1')" [defaultValue]="0"/>
+        <input class="w-full" type="number" min="0" max="3" (change)="updateInputData($event.target, 'EV2')" [defaultValue]="0"/>
+        <input class="w-full" type="number" min="0" max="3" (change)="updateInputData($event.target, 'EV3')" [defaultValue]="0"/>
+        <input class="w-full" type="number" min="0" max="3" (change)="updateInputData($event.target, 'EV4')" [defaultValue]="0"/>
+        <input class="w-full" type="number" min="0" max="3" (change)="updateInputData($event.target, 'EV5')" [defaultValue]="0"/>
+        <input class="w-full" type="number" min="0" max="3" (change)="updateInputData($event.target, 'EV6')" [defaultValue]="0"/>
+      </div>
+      <button *ngIf="status === 1" type="button" role="button" (click)="makeGuess($event)">Guess</button>
+    </form>
+    <p>Current Score: {{score}} / {{maxscore}}</p>
+    <h3>Round {{round}}</h3>
+  </div>
+  <div *ngIf="status === 2" class="card justify-items-center">
+    <div [ngClass]="diffDisplayClass">
+      <diffdisplay [data]="activeQuizInput" [title]="'Your Guess'" [mobileClass]="diffDisplayClass"></diffdisplay>
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16" *ngIf="diffDisplayClass === 'diff-display'">
+        <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 320 512" *ngIf="diffDisplayClass === 'diff-display-mobile'">
+        <path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/>
+      </svg>
+      <diffdisplay [data]="activeQuizGuess" [guesses]="guesses" [title]="'Answer'" [mobileClass]="diffDisplayClass"></diffdisplay>
+    </div>
+  </div>
+  <!-- End of game final score -->
+  <div *ngIf="status === 3" class="card space-x-2">
+    <h3>Congratulations!</h3>
+    <p><b>You scored: </b>{{score}} out of {{maxscore}}</p>
+    <button type="button" (click)="updateGameStatus(4)">View Statistics</button>
+    <button (click)="resetGame()">Play Again</button>
+  </div>
+  <!-- Statistics -->
+  <div *ngIf="status === 4" class="card">
+    <h2>Game Statistics</h2>
+    <div *ngFor="let entry of objectKeys(statsDisplay)" class="card border-2 border-black">
+      <p>Section {{statsDisplay[entry]['index']}} ({{statsDisplay[entry]['type']}})</p>
+      <div *ngFor="let field of objectKeys(statsDisplay[entry]['entries'])">
+        <p *ngIf="field !== 'max'">
+          {{field.charAt(0).toUpperCase() + field.substring(1)}}: {{statsDisplay[entry]['entries'][field]}} / {{statsDisplay[entry]['entries']['max']}}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

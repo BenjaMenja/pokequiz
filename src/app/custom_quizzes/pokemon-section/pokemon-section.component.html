@@ -1,0 +1,46 @@
+
+<div class="flex flex-col space-x-2">
+  <h4><u><b>Pokemon Section</b></u></h4>
+  <div class="box">
+    <u>Generations</u>
+    <div class="flex flex-row" *ngFor="let generation of generations">
+      <input type="checkbox" (change)="modifyOptions($event.target, {gen: generation[0]})" [ngModel]="options['generations'][generation[0]]">
+      <label>Generation {{generation[0][generation[0].length - 1]}}</label>
+    </div>
+  </div>
+  <div class="box">
+    <u>Types</u>
+    <div [ngClass]="typeClass">
+      <div class="flex flex-row" *ngFor="let type of types">
+        <input type="checkbox" (change)="modifyOptions($event.target, {type: type[0]})" [ngModel]="options['types'][type[0]]">
+        <label>{{type[0][0].toUpperCase() + type[0].substring(1)}}</label>
+      </div>
+    </div>
+  </div>
+  <div class="box">
+    <u>Given</u>
+    <div class="grid grid-cols-2">
+      <div class="flex flex-row" *ngFor="let entry of given">
+        <input type="checkbox" (change)="modifyOptions($event.target, {given: entry[0]})" [ngModel]="options['given'][entry[0]]">
+        <label *ngIf="entry[0] !== 'bst' && entry[0] !== 'evspread'">{{entry[0][0].toUpperCase() + entry[0].substring(1)}}</label>
+        <label *ngIf="entry[0] === 'evspread'">EV Spread</label>
+        <label *ngIf="entry[0] === 'bst'">Base Stat Total</label>
+      </div>
+    </div>
+  </div>
+  <div class="box">
+    <u>Guess</u>
+    <div class="grid grid-cols-2">
+      <div class="flex flex-row" *ngFor="let entry of guess">
+        <input type="checkbox" (change)="modifyOptions($event.target, {guess: entry[0]})" [ngModel]="options['guess'][entry[0]]">
+        <label *ngIf="entry[0] !== 'bst' && entry[0] !== 'evspread'">{{entry[0][0].toUpperCase() + entry[0].substring(1)}}</label>
+        <label *ngIf="entry[0] === 'evspread'">EV Spread</label>
+        <label *ngIf="entry[0] === 'bst'">Base Stat Total</label>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-row items-center gap-x-2 self-center">
+    <input type="number" (change)="modifyQuestionCount($event.target)" [value]="questionCount">
+    <label>Number of Questions</label>
+  </div>
+</div>

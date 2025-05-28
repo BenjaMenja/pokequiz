@@ -1,1 +1,45 @@
-<p>quiz-generator works!</p>
+<div class="space-y-8 justify-items-center">
+  <div *ngIf="status === 0" [ngClass]="titleCardClass">
+    <div class="card">
+      <img src="assets/quiz-maker-title.png" class="mx-auto" alt="Quiz Maker Title Text"/>
+      <p>PokeQuiz supports custom made quizzes using the quiz editor!</p>
+      <p>The quiz editor allows you to create fully customized quizzes about any topic!</p>
+      <p>To begin, create a quiz using the editor,</p>
+      <p>or head on over to the custom quizzes page to play an existing one.</p>
+    </div>
+    <div class="flex flex-row gap-2 justify-center mb-2">
+      <button (click)="updateStatus(1)">Create</button>
+    </div>
+  </div>
+  <div *ngIf="status === 1">
+    <div class="grid grid-cols-2 gap-2">
+      <div class="card">
+        <h3>Settings</h3>
+        <div class="flex flex-col space-y-4 items-center">
+          <div class="inputfield">
+            <input type="checkbox" (change)="updateSettings($event.target, 'shuffle')">
+            <label title="Toggles question shuffling. A shuffled quiz will randomly choose a question from the available quiz sections instead of going through each section sequentially.">Shuffle</label>
+          </div>
+          <button (click)="saveQuiz()">Save</button>
+          <button (click)="clickImport()">Import</button>
+          <p class="text-red-500 text-sm" *ngIf="errorMsg !== ''">{{errorMsg}}</p>
+        </div>
+        <input type="file" class="hidden" (change)="importQuiz($event)" #fileUpload>
+      </div>
+      <div class="card">
+        <h3>Quiz Elements</h3>
+        <div class="space-y-4 flex flex-col">
+          <button class="bg-white hover:bg-gray-300" (click)="addComponent('ability')">Add Abilities</button>
+          <button class="bg-white hover:bg-gray-300" (click)="addComponent('move')">Add Moves</button>
+          <button class="bg-white hover:bg-gray-300" (click)="addComponent('pokemon')">Add Pokemon</button>
+        </div>
+      </div>
+      <div class="card col-span-2">
+        <h3>Current Quiz</h3>
+        <div #sectionContainer>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

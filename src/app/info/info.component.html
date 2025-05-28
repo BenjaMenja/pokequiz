@@ -4,36 +4,52 @@
     <img src="assets/what-is-it.png" [ngClass]="subtitleImgClass" alt="What is it? Subtitle">
     <p>PokeQuiz aims to be the go to destination for Pokemon related quizzes! It features quizzes spanning the major corners of the Pokemon games, including Pokemon themselves, moves, and cries! 
       You will play a continuous set of rounds, filling as much information as you can. At the end, you can either play again or view a breakdown of how well you did in each category!
-      For more information, check out the info cards below! Click on one to begin playing!</p></div>  
-  </div>
+      PokeQuiz also features a quiz generator, capable of creating fully customized quizzes about Pokemon, moves, and abilities!
+      For more information, check out the info cards below. Click on one to begin playing!</p>
+  </div>  
+</div>
 <div [ngClass]="contentClass">
   <div class="group card clickable" routerLink="/pokemon">
     <div class="titlebar">
       <img src="assets/pikachu-icon.png" alt="Pikachu Icon"/>
-      <h2><u><b>Pokemon</b></u></h2>
+      <h2>Pokemon</h2>
     </div>
     <p>A quiz all about a Pokemon's attributes. Be prepared to know a Pokemon's types, generation, abilities, base stat total, height, and weight!</p>
   </div>
   <div class="group card clickable" routerLink="/moves">
     <div class="titlebar">
       <img src="assets/fire-icon.png" alt="Fire Type Icon"/>
-      <h2><u><b>Moves</b></u></h2>
+      <h2>Moves</h2>
     </div>
     <p>A quiz all about a move's attributes. Given the description, be prepared to know a move's name, type, generation, PP, power, category, and accuracy!</p>
   </div>
   <div class="group card clickable" routerLink="/cries">
     <div class="titlebar">
       <img src="assets/speaker.png" alt="Speaker Icon"/>
-      <h2><u><b>Cries</b></u></h2>
+      <h2>Cries</h2>
     </div>
     <p>A quiz about Pokemon cries. Put your listening ears on and fill in the Pokemon name based on its cry!</p>
   </div>
   <div class="group card clickable" routerLink="/sprites">
     <div class="titlebar">
       <img src="assets/charmander.png" alt="Charmander Icon"/>
-      <h2><u><b>Sprites</b></u></h2>
+      <h2>Sprites</h2>
     </div>
     <p>A simple quiz about Pokemon names. Guess the Pokemon based on its in-game sprite!</p>
+  </div>
+  <div class="group card clickable" routerLink="/quiz-maker">
+    <div class="titlebar">
+      <img src="assets/pretty-feather.png" alt="Pretty Feather Icon"/>
+      <h2>Quiz Maker</h2>
+    </div>
+    <p>A generator that builds fully customizable pokemon quizzes. Supports questions about Pokemon, Moves, and Abilities.</p>
+  </div>
+  <div class="group card clickable" routerLink="/custom-quiz">
+    <div class="titlebar">
+      <img src="assets/pokedex.png" alt="Pokedex Icon"/>
+      <h2>Quiz Player</h2>
+    </div>
+    <p>Play your generated quizzes here! Supports quizzes created with the Quiz Maker.</p>
   </div>
 </div>
 

@@ -9,7 +9,7 @@
 }
 
 .content {
-  @apply flex flex-col justify-items-center;
+  @apply grid grid-cols-2 gap-x-8;
 }
 
 .content-mobile {

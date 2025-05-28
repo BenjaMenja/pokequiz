@@ -1,6 +1,19 @@
 # Full Changelog
 
-### v1.0.5 <-- NEW
+## v1.1 <-- NEW
+
+**Additions**
+
+- Added the Quiz Editor and Custom Quiz player. Currently supports Pokemon, Move, and Ability quizzes as well as question shuffling for settings.
+- Improved visuals for mobile devices.
+
+**Fixes**
+
+- Fixed the background image stretching if the page content required scrolling to see all of it.
+- Fixed the title cards for the different quizzes being different lengths.
+- Fixed text on the title cards for the default quizzes displaying incorrect information about the number of rounds (It is not always ten rounds).
+
+### v1.0.5
 
 **Additions**
 

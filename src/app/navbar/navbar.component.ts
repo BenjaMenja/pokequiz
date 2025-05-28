@@ -24,7 +24,7 @@ import {
 export class NavbarComponent implements OnInit {
   public settings: boolean = false;
   public changelog: boolean = false;
-  private version: string = '1.0.3';
+  private version: string = '1.1';
   public navStyle: string = 'nav-items';
   public changelogStyle: string = 'changelog';
   public itemsVisible: boolean = true;

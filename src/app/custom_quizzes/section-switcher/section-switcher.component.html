@@ -1,0 +1,6 @@
+<div [ngSwitch]="componentName" class="border-2 border-black bg-white p-1 mb-2">
+  <app-ability-section *ngSwitchCase="'ability'" [importedData]="importedData" #section></app-ability-section>
+  <app-move-section *ngSwitchCase="'move'" [importedData]="importedData" #section></app-move-section>
+  <app-pokemon-section *ngSwitchCase="'pokemon'" [importedData]="importedData" #section></app-pokemon-section>
+  <button (click)="remove.emit()" class="bg-red-700 hover:bg-red-500 mt-1">X</button>
+</div>

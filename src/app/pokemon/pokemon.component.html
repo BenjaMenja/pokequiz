@@ -1,8 +1,8 @@
 <div class="space-y-8 justify-items-center">
-  <div *ngIf="status === 0">
+  <div *ngIf="status === 0" [ngClass]="titleCardClass">
     <div class="card">
-      <img src="assets/welcome.png" class="w-1/2 mx-auto" alt="Welcome Title"/>
-      <p>PokeQuiz is a ten round quiz, testing your knowledge of Pokemon data!</p>
+      <img src="assets/welcome.png" class="mx-auto" alt="Welcome Title"/>
+      <p>PokeQuiz can test your knowledge of Pokemon data!</p>
       <p>You will have {{maxTimer}} seconds per round to answer as much as you can about a Pokemon.</p>
       <p>You will be scored based on how many correct answers you get per Pokemon.</p>
       <p>A breakdown of how well you did will be shown at the end.</p>
